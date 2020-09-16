@@ -1,5 +1,9 @@
 # Parkind-Server
 
+## Notice
+
+The project is still in the workings - most of the features are not implemented yet.
+
 ## Description
 
 The parkind project's goal is to create a set of open source tools that make it easier for parking owners to manage traffic load and parking fee acquisition. 
