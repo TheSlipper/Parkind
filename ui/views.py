@@ -16,6 +16,11 @@ def forgot_password(request):
 
 # Dashboard
 def dashboard(request):
+    # Smi queries for GPU information:
+    # https://nvidia.custhelp.com/app/answers/detail/a_id/3751/~/useful-nvidia-smi-queries
+    #
+    # Query for utilization of GPU: nvidia-smi --query-gpu=utilization.gpu --format=csv
+
     return render(request, 'ui/dashboard.html')
 
 
