@@ -1,6 +1,19 @@
 from django.shortcuts import render
 
 
+# Login and Registration
+def login(request):
+    return render(request, 'ui/login.html')
+
+
+def register(request):
+    return render(request, 'ui/register.html')
+
+
+def forgot_password(request):
+    return render(request, 'ui/forgot_password.html')
+
+
 # Dashboard
 def dashboard(request):
     return render(request, 'ui/dashboard.html')
