@@ -20,5 +20,6 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ui/', include('ui.urls')),
-    path('', lambda req: redirect('/ui/dashboard'))
+    path('api/', include('api.urls')),
+    path('', lambda req: redirect('/ui/dashboard')),
 ]
