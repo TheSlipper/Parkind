@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import *
 
 
 # Login and Registration
@@ -25,8 +26,10 @@ def dashboard(request):
 
 
 # Devices views
-def devices_list(request):
-    return render(request, 'ui/devices/list.html')
+def devices_list(request, page, sort_by, elems):
+    devices = Device.objects.order_by(sort_by)[page:elems]
+    ctx = {'devices': devices}
+    return render(request, 'ui/devices/list.html', ctx)
 
 
 def devices_requests(request):

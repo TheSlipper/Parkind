@@ -11,7 +11,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
 
     # Devices
-    path('devices/manage/list', views.devices_list, name='devices_list'),
+    path('devices/manage/list?<int:page>&<str:sort_by>&<int:elems>', views.devices_list, name='devices_list'),
     path('devices/manage/requests', views.devices_requests, name='devices_requests'),
     path('devices/manage/api_inspection', views.devices_api_inspection, name='devices_api_inspection'),
 
