@@ -1,4 +1,4 @@
-# Parkind-Server
+# Parkind
 
 ## Notice
 
