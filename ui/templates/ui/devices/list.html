@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block content %}
-    <div class="container-fluid" onload="fillPaginatedTableWithData(dataTable, 0, 'created_on', 20, '/api/device/list')">
+    <div class="container-fluid"
+         onload="fillPaginatedTableWithData(dataTable, 0, 'created_on', 20, '/api/device/list')">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Devices List</h6>
@@ -28,8 +29,13 @@
                             <option>20</option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <button type="submit" class="btn btn-primary btn-block">Refresh</button>
+                    </div>
+                    <div class="col-sm-1" id="loading-spinner">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </form>
                 <div class="table-responsive">
@@ -43,16 +49,16 @@
                             <th>API Logging</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {% for device in devices %}
-                            <tr>
-                                <td>{{ device.id }}</td>
-                                <td>{{ device.name }}</td>
-                                <td>{{ device.created_on }}</td>
-                                <td>{{ device.created_by }}</td>
-                                <td>{{ device.request_logging }}</td>
-                            </tr>
-                        {% endfor %}
+                        <tbody id="content-body">
+                        {#                        {% for device in devices %}#}
+                        {#                            <tr>#}
+                        {#                                <td>{{ device.id }}</td>#}
+                        {#                                <td>{{ device.name }}</td>#}
+                        {#                                <td>{{ device.created_on }}</td>#}
+                        {#                                <td>{{ device.created_by }}</td>#}
+                        {#                                <td>{{ device.request_logging }}</td>#}
+                        {#                            </tr>#}
+                        {#                        {% endfor %}#}
                         </tbody>
                     </table>
                 </div>
@@ -104,5 +110,22 @@
     </div>
 
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-    <script src="{% static 'js/rest-data-table.js' %}"></script>
+    {#    <script src="{% static 'js/rest-data-table.js' %}"></script>#}
+    <script src="{% static 'js/rest/device.js' %}"></script>
+    <script defer>
+        window.onload = function () {
+            function afterRequest(arr) {
+                if (arr == null || arr === []) {
+                    return;
+                }
+                let tableContent = '';
+                arr.forEach(device => tableContent += `<tr><td>${device.id}</td><td>${device.name}</td>
+                    <td>${device.created_on}</td><td>${device.created_by}</td><td>${device.request_logging}</td></tr>`);
+
+                document.getElementById('content-body').innerHTML = tableContent;
+                document.getElementById('loading-spinner').innerHTML = '';
+            }
+            deviceList(afterRequest);
+        };
+    </script>
 {% endblock %}
