@@ -49,17 +49,7 @@
                             <th>API Logging</th>
                         </tr>
                         </thead>
-                        <tbody id="content-body">
-                        {#                        {% for device in devices %}#}
-                        {#                            <tr>#}
-                        {#                                <td>{{ device.id }}</td>#}
-                        {#                                <td>{{ device.name }}</td>#}
-                        {#                                <td>{{ device.created_on }}</td>#}
-                        {#                                <td>{{ device.created_by }}</td>#}
-                        {#                                <td>{{ device.request_logging }}</td>#}
-                        {#                            </tr>#}
-                        {#                        {% endfor %}#}
-                        </tbody>
+                        <tbody id="content-body"></tbody>
                     </table>
                 </div>
                 <div class="row">
@@ -110,9 +100,9 @@
     </div>
 
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-    {#    <script src="{% static 'js/rest-data-table.js' %}"></script>#}
     <script src="{% static 'js/rest/device.js' %}"></script>
     <script defer>
+        const ADD_URL = "<a href=\"{% url 'device_add_form' %}\" class='btn btn-success btn-block'>Add New</a>";
         window.onload = function () {
             function afterRequest(arr) {
                 if (arr == null || arr === []) {
@@ -123,7 +113,7 @@
                     <td>${device.created_on}</td><td>${device.created_by}</td><td>${device.request_logging}</td></tr>`);
 
                 document.getElementById('content-body').innerHTML = tableContent;
-                document.getElementById('loading-spinner').innerHTML = '';
+                document.getElementById('loading-spinner').innerHTML = ADD_URL;
             }
             deviceList(afterRequest);
         };

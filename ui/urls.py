@@ -15,6 +15,7 @@ urlpatterns = [
     path('devices/manage/list', views.devices_list, name='devices_list'),
     path('devices/manage/requests', views.devices_requests, name='devices_requests'),
     path('devices/manage/api_inspection', views.devices_api_inspection, name='devices_api_inspection'),
+    path('devices/manage/add', views.device_add_form, name='device_add_form'),
 
     path('devices/settings/general_settings', views.devices_general_settings, name='devices_general_settings'),
     path('devices/settings/api_settings', views.devices_api_settings, name='devices_api_settings'),

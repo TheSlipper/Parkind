@@ -40,6 +40,10 @@ def devices_api_inspection(request):
     return render(request, 'ui/devices/api_inspection.html')
 
 
+def device_add_form(request):
+    return render(request, 'ui/devices/add_form.html')
+
+
 def devices_general_settings(request):
     return render(request, 'ui/devices/general_settings.html')
 

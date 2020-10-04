@@ -1,0 +1,75 @@
+{% extends 'ui/application_layout.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-1 text-gray-800">Add a new device</h1>
+        <p class="mb-4">
+            This forms can be used to test connection to a device and add it to the database.
+            To find out more about this page check out the <a href="">help section</a>.
+        </p>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Test device connection</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-sm-3 row ml-0 mr-0 pl-0 pr-0">
+                        <input name="page" value="0" type="hidden">
+                        <label for="ipv4_addr_test" class="col-sm-3 mt-1">IPv4 address:</label>
+                        <input id="ipv4_addr_test" class="form-control col-sm-9 mt-2"
+                               placeholder="e.g.: 192.168.1.101:3100">
+                    </div>
+                    <div class="form-group col-sm-5 row">
+                        <label for="device_token_test" class="col-sm-3 mt-3">Device token:</label>
+                        <input id="device_token_test" class="form-control col-sm-9 mt-2"
+                               placeholder="e.g.: dae033bd-0585-4a61-81b2-8129020c49d9">
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-primary btn-block mt-2">Connect</button>
+                    </div>
+                    <div class="col-sm-1" id="loading-spinner">
+                        {#                        <div class="spinner-border mt-2" role="status">#}
+                        {#                            <span class="sr-only">Loading...</span>#}
+                        {#                        </div>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Add a new device</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
+                        <input name="page" value="0" type="hidden">
+                        <label for="ipv4_addr" class="col-sm-3 mt-2">IPv4 address:</label>
+                        <input id="ipv4_addr" class="form-control col-sm-9" placeholder="e.g.: 192.168.1.101:3100">
+                    </div>
+                    <div class="form-group col-sm-6 row">
+                        <label for="device_token" class="col-sm-3 mt-2">Device token:</label>
+                        <input id="device_token" class="form-control col-sm-9"
+                               placeholder="e.g.: dae033bd-0585-4a61-81b2-8129020c49d9">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
+                        <input name="page" value="0" type="hidden">
+                        <label for="device_name" class="col-sm-3 mt-2">Device name:</label>
+                        <input id="device_name" class="form-control col-sm-9"
+                               placeholder="e.g.: RaspberryPi 4 - Parking 1">
+                    </div>
+                    <div class="form-group col-sm-6 row">
+                        <label for="device_description" class="col-sm-3 mt-2">Description:</label>
+                        <textarea id="device_description" class="form-control col-sm-9"
+                                  placeholder="e.g.: Connected to all the cameras in parking 1"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn btn-primary btn-block">Add the device</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
