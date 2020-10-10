@@ -67,9 +67,40 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-primary btn-block">Add the device</button>
+                    <button class="btn btn-primary btn-block" onclick="addDeviceReq()">Add the device</button>
                 </div>
             </div>
         </div>
     </div>
+    <script src="{% static 'js/rest/device.js' %}"></script>
+    <script>
+        function addDeviceReq() {
+            let foo = function (val) {
+                console.log('Result:', val);
+            }
+            let ipv4Addr = document.getElementById('ipv4_addr').value;
+            let token = document.getElementById('device_token').value; // TODO: Add this to path of REST URL?
+            let name = document.getElementById('device_name').value;
+            let description = document.getElementById('device_description').value;
+            let logging = true;
+
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth();
+            let yyyy = today.getFullYear();
+            if (dd < 10)
+                dd = '0' + dd
+
+            let url = "{% url 'device_create' 'a' %}".replace('a/', '') + token + '/';
+
+            console.log(url);
+            deviceCreate({
+                name: name,
+                ip_address: ipv4Addr,
+                description: description,
+                request_logging: logging,
+                created_on: yyyy + '-' + mm + '-' + dd
+            }, token, foo);
+        }
+    </script>
 {% endblock %}

@@ -9,7 +9,8 @@ from .serializers import *
 
 # Device CRUD
 @api_view(['POST'])
-def device_create(request):
+def device_create(request, token):
+    # TODO: Token is that the device generates and user inputs. Do some verification if that's correct
     serializer = DeviceSerializer(data=request.data)
 
     if serializer.is_valid():

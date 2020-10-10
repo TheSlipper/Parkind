@@ -7,20 +7,21 @@ const URL = "/api/";
  * @param finishingFunction function that is executed after the request receives a response. It should take one
  *  parameter - a boolean value representing the result of the request.
  */
-function deviceCreate(device, finishingFunction) {
+function deviceCreate(device, token, finishingFunction) {
     // TODO: Test this
     let request = new XMLHttpRequest();
-    request.open('POST', URL + 'device/create', true);
+    request.open('POST', URL + 'device/create/' + token + '/', true);
+    request.setRequestHeader('Content-Type', 'application/json');
     request.onreadystatechange = function () {
         let result = false;
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 201) {
             result = true;
         }
 
-        if (finishingFunction != null)
-            finishingFunction(result);
+        // if (finishingFunction != null)
+        finishingFunction(result);
     };
-    request.send(device);
+    request.send(JSON.stringify(device));
 }
 
 /**

@@ -43,6 +43,7 @@ class Device(models.Model):
     Model containing information on a single IoT device connected to the Parkind system via its API.
     """
     id = models.AutoField(primary_key=True, null=False)
+    ip_address = models.CharField(max_length=16, unique=True, null=False, default='255.255.255.255')
     created_on = models.DateField(null=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     name = models.CharField(default='Parkind Device', null=False, max_length=100)
