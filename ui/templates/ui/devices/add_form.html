@@ -18,7 +18,7 @@
                         <input name="page" value="0" type="hidden">
                         <label for="ipv4_addr_test" class="col-sm-3 mt-1">IPv4 address:</label>
                         <input id="ipv4_addr_test" class="form-control col-sm-9 mt-2"
-                               placeholder="e.g.: 192.168.1.101:3100">
+                               placeholder="e.g.: 192.168.1.101">
                     </div>
                     <div class="form-group col-sm-5 row">
                         <label for="device_token_test" class="col-sm-3 mt-3">Device token:</label>
@@ -45,7 +45,7 @@
                     <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
                         <input name="page" value="0" type="hidden">
                         <label for="ipv4_addr" class="col-sm-3 mt-2">IPv4 address:</label>
-                        <input id="ipv4_addr" class="form-control col-sm-9" placeholder="e.g.: 192.168.1.101:3100">
+                        <input id="ipv4_addr" class="form-control col-sm-9" placeholder="e.g.: 192.168.1.101">
                     </div>
                     <div class="form-group col-sm-6 row">
                         <label for="device_token" class="col-sm-3 mt-2">Device token:</label>
@@ -99,7 +99,8 @@
                 ip_address: ipv4Addr,
                 description: description,
                 request_logging: logging,
-                created_on: yyyy + '-' + mm + '-' + dd
+                created_on: yyyy + '-' + mm + '-' + dd,
+                created_by: {{ user_id }}
             }, token, foo);
         }
     </script>

@@ -41,7 +41,10 @@ def devices_api_inspection(request):
 
 
 def device_add_form(request):
-    return render(request, 'ui/devices/add_form.html')
+    # TODO: Switch to that when working with authentication and authorization
+    # usr_id = {'user_id': request.user.id}
+    usr_id = {'user_id': 1}
+    return render(request, 'ui/devices/add_form.html', usr_id)
 
 
 def devices_general_settings(request):

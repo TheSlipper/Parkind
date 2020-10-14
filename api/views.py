@@ -10,10 +10,12 @@ from .serializers import *
 # Device CRUD
 @api_view(['POST'])
 def device_create(request, token):
-    # TODO: Token is that the device generates and user inputs. Do some verification if that's correct
+    # TODO: Token is that the device generates and user inputs. Verify if the device uses that token in here
     serializer = DeviceSerializer(data=request.data)
+    user = request.user
 
-    if serializer.is_valid():
+    # TODO: Uncomment this once logging in system works
+    if serializer.is_valid():  # and user.id == serializer.validated_data.created_by:
         serializer.save()
         return HttpResponse(status=201)
 
