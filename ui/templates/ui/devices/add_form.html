@@ -73,11 +73,17 @@
         </div>
     </div>
     <script src="{% static 'js/rest/device.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
     <script>
         function addDeviceReq() {
             let foo = function (val) {
-                console.log('Result:', val);
+                if (val)
+                    window.location.replace("/ui/devices/manage/list");
+                else
+                    console.log("Well something crapped itself...");
             }
+
+            let csrftoken = getCookie('csrftoken');
             let ipv4Addr = document.getElementById('ipv4_addr').value;
             let token = document.getElementById('device_token').value; // TODO: Add this to path of REST URL?
             let name = document.getElementById('device_name').value;
@@ -101,7 +107,7 @@
                 request_logging: logging,
                 created_on: yyyy + '-' + mm + '-' + dd,
                 created_by: {{ user_id }}
-            }, token, foo);
+            }, token, csrftoken, foo);
         }
     </script>
 {% endblock %}
