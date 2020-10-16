@@ -1,5 +1,29 @@
 {% extends 'ui/application_layout.html' %}
 
 {% block content %}
-<h1>Device General Settings</h1>
+    <div class="container-fluid">
+        <h1 class="h3 mb-1 text-gray-800">Device Settings</h1>
+        <p class="mb-4">
+            General settings concerning the devices.
+            To find out more about this page check out the <a href="">help section</a>.
+        </p>
+        <br>
+        <div class="container border rounded pt-3 pb-3 bg-white">
+            <div class="row">
+                <div class="col-sm-12">
+                    <strong>Transfer Settings</strong><br/>
+                    <!-- Default checked -->
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="oneFpsLimit" checked>
+                        <label class="custom-control-label" for="oneFpsLimit">1FPS Limit</label>
+                    </div>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
+                        <label class="custom-control-label" for="customSwitch1">High Ping Disconnect</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
