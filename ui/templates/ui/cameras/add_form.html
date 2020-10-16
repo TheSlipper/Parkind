@@ -1,0 +1,101 @@
+{% extends 'ui/application_layout.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-1 text-gray-800">Add a new camera</h1>
+        <p class="mb-4">
+            This form can be used to add a camera connected to a device to the Parkind system's database.
+            To find out more about this page check out the <a href="">help section</a>.
+        </p>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Add a new camera</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
+                        <input name="page" value="0" type="hidden">
+                        <label for="camera_name" class="col-sm-3 mt-2">Camera's name:</label>
+                        <input id="camera_name" class="form-control col-sm-9" placeholder="e.g.: A1 Parking Camera">
+                    </div>
+                    <div class="form-group col-sm-6 row">
+                        <label for="parent_device_id" class="col-sm-3 mt-2">Parent Device ID:</label>
+                        <select class="form-control col-sm-9" id="parent_device_id">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
+                        <label for="width" class="col-sm-5 mt-2">Camera's image width:</label>
+                        <input id="width" class="form-control col-sm-7"
+                               placeholder="e.g.: 1280">
+                    </div>
+                    <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
+                        <label for="height" class="col-sm-5 mt-2">Camera's image height:</label>
+                        <input id="height" class="form-control col-sm-7"
+                               placeholder="e.g.: 720">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4 row ml-0 mr-0 pl-0 pr-0">
+                        <input name="page" value="0" type="hidden">
+                        <label for="framerate" class="col-sm-3 mt-2">Camera's framerate:</label>
+                        <input id="framerate" class="form-control col-sm-9"
+                               placeholder="e.g.: 30">
+                    </div>
+                    <div class="form-group col-sm-6 row">
+                        <label for="description" class="col-sm-3 mt-2">Description:</label>
+                        <textarea id="description" class="form-control col-sm-9"
+                                  placeholder="e.g.: Camera facing the A1 parking"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn btn-primary btn-block" onclick="addDeviceReq()">Add the camera</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/rest/crud.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script>
+        function addDeviceReq() {
+            let foo = function (val) {
+                if (val)
+                    window.location.replace("/ui/cameras/manage/list");
+                else
+                    console.log("Well something crapped itself...");
+            }
+
+            let csrftoken = getCookie('csrftoken');
+            let name = document.getElementById('camera_name').value;
+            let height = document.getElementById('height').value;
+            let width = document.getElementById('width').value;
+            let framerate = document.getElementById('framerate').value;
+            let description = document.getElementById('description').value;
+            let parent = parseInt(document.getElementById('parent_device_id').value);
+
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth();
+            let yyyy = today.getFullYear();
+            if (dd < 10)
+                dd = '0' + dd
+
+            requestCreate('camera', {
+                created_on: yyyy + '-' + mm + '-' + dd,
+                name: name,
+                description: description,
+                parent_device: parent,
+                video_height: height,
+                video_width: width,
+                video_fps: framerate
+            }, csrftoken, foo);
+        }
+    </script>
+{% endblock %}

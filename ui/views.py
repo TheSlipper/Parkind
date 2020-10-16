@@ -1,4 +1,6 @@
 from django.shortcuts import render
+
+
 # from api.models import *
 
 
@@ -40,7 +42,7 @@ def devices_api_inspection(request):
     return render(request, 'ui/devices/api_inspection.html')
 
 
-def device_add_form(request):
+def devices_add_form(request):
     # TODO: Switch to that when working with authentication and authorization
     # usr_id = {'user_id': request.user.id}
     usr_id = {'user_id': 1}
@@ -78,6 +80,11 @@ def cameras_general_settings(request):
 
 def cameras_streaming_settings(request):
     return render(request, 'ui/cameras/streaming_settings.html')
+
+
+def cameras_add_form(request):
+    usr_id = {'user_id': 1}
+    return render(request, 'ui/cameras/add_form.html', usr_id)
 
 
 # Users

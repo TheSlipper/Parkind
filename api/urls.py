@@ -12,7 +12,7 @@ urlpatterns = [
     # Camera endpoints
     path('camera/list', views.camera_list, name='camera_list'),
     path('camera/detail/<int:id>/', views.camera_detail, name='camera_detail'),
-    path('camera/create/<str:token>/', views.camera_create, name='camera_create'),
+    path('camera/create', views.camera_create, name='camera_create'),
     path('camera/update/<int:id>/', views.camera_update, name='camera_update'),
     path('camera/delete/<int:id>/', views.camera_delete, name='camera_delete')
 ]

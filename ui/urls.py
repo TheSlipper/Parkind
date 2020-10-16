@@ -15,7 +15,7 @@ urlpatterns = [
     path('devices/manage/list', views.devices_list, name='devices_list'),
     path('devices/manage/requests', views.devices_requests, name='devices_requests'),
     path('devices/manage/api_inspection', views.devices_api_inspection, name='devices_api_inspection'),
-    path('devices/manage/add', views.device_add_form, name='devices_add_form'),
+    path('devices/manage/add', views.devices_add_form, name='devices_add_form'),
 
     path('devices/settings/general_settings', views.devices_general_settings, name='devices_general_settings'),
     path('devices/settings/api_settings', views.devices_api_settings, name='devices_api_settings'),
@@ -25,7 +25,7 @@ urlpatterns = [
     path('cameras/manage/detection_areas', views.cameras_detection_areas, name='cameras_detection_areas'),
     path('cameras/manage/streaming_requests', views.cameras_streaming_requests, name='cameras_streaming_requests'),
     path('cameras/manage/livestream', views.cameras_livestream, name='cameras_livestream'),
-    path('cameras/manage/add', views.device_add_form, name='cameras_add_form'),
+    path('cameras/manage/add', views.cameras_add_form, name='cameras_add_form'),
 
     path('cameras/manage/general_settings', views.cameras_general_settings, name='cameras_general_settings'),
     path('cameras/manage/streaming_settings', views.cameras_streaming_settings, name='cameras_streaming_settings'),
