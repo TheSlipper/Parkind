@@ -2,14 +2,13 @@
 {% load static %}
 
 {% block content %}
-    <div class="container-fluid"
-         onload="fillPaginatedTableWithData(dataTable, 0, 'created_on', 20, '/api/device/list')">
+    <div class="container-fluid">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Devices List</h6>
             </div>
             <div class="card-body">
-                <form class="row" method="get" action="/ui/devices/manage/list">
+                <div class="row">
                     <div class="form-group col-sm-3 row">
                         <input name="page" value="0" type="hidden">
                         <label for="sorting_select" class="col-sm-3 mt-1">Sort By:</label>
@@ -37,7 +36,7 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                     </div>
-                </form>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>

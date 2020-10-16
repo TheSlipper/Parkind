@@ -8,6 +8,12 @@ class DeviceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class DeviceRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceRequestHistory
+        fields = '__all__'
+
+
 class CameraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Camera

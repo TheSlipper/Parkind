@@ -55,6 +55,28 @@ def device_delete(request, id):
     return HttpResponse(status=200)
 
 
+# Device request RD
+@api_view(['GET'])
+def device_request_detail(request, id):
+    device_request = DeviceRequestHistory.objects.get(id=id)
+    serializer = DeviceRequestSerializer(device_request, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def device_request_list(request):
+    device_requests = DeviceRequestHistory.objects.all()
+    serializer = DeviceRequestSerializer(device_requests, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def device_request_delete(request, id):
+    device_request = DeviceRequestHistory.objects.get(id=id)
+    device_request.delete()
+    return HttpResponse(status=200)
+
+
 # Camera CRUD
 @api_view(['POST'])
 def camera_create(request):

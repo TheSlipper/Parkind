@@ -9,10 +9,15 @@ urlpatterns = [
     path('device/update/<int:id>/', views.device_update, name='device_update'),
     path('device/delete/<int:id>/', views.device_delete, name='device_delete'),
 
+    # Device request history
+    path('device_request/list', views.device_request_list, name='device_request_list'),
+    path('device_request/detail/<int:id>/', views.device_request_detail, name='device_request_detail'),
+    path('device_request/delete/<int:id>/', views.device_request_delete, name='device_request_delete'),
+
     # Camera endpoints
     path('camera/list', views.camera_list, name='camera_list'),
     path('camera/detail/<int:id>/', views.camera_detail, name='camera_detail'),
     path('camera/create', views.camera_create, name='camera_create'),
     path('camera/update/<int:id>/', views.camera_update, name='camera_update'),
-    path('camera/delete/<int:id>/', views.camera_delete, name='camera_delete')
+    path('camera/delete/<int:id>/', views.camera_delete, name='camera_delete'),
 ]
