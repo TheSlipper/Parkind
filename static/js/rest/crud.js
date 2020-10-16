@@ -8,8 +8,9 @@ const URL = "/api/";
  *  parameter - an array of specified entity objects.
  */
 function requestList(entityType, finishingFunction) {
+    let finalUrl = URL + entityType + '/list';
     let request = new XMLHttpRequest();
-    request.open('GET', URL + entityType + '/list', true);
+    request.open('GET', finalUrl, true);
     request.onreadystatechange = function () {
         let deviceArr = null;
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
