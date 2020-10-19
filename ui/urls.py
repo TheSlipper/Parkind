@@ -23,7 +23,6 @@ urlpatterns = [
     # Cameras
     path('cameras/manage/list', views.cameras_list, name='cameras_list'),
     path('cameras/manage/detection_areas', views.cameras_detection_areas, name='cameras_detection_areas'),
-    path('cameras/manage/streaming_requests', views.cameras_streaming_requests, name='cameras_streaming_requests'),
     path('cameras/manage/livestream', views.cameras_livestream, name='cameras_livestream'),
     path('cameras/manage/add', views.cameras_add_form, name='cameras_add_form'),
 

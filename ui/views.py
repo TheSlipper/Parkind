@@ -66,10 +66,6 @@ def cameras_detection_areas(request):
     return render(request, 'ui/cameras/detection_areas.html')
 
 
-def cameras_streaming_requests(request):
-    return render(request, 'ui/cameras/requests.html')
-
-
 def cameras_livestream(request):
     return render(request, 'ui/cameras/livestream.html')
 

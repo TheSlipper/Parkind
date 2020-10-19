@@ -1,5 +1,53 @@
 {% extends 'ui/application_layout.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Detection Areas</h1>
+    <div class="container-fluid">
+        <h1 class="h3 mb-1 text-gray-800">Camera's Detection Areas</h1>
+        <p class="mb-4">
+            This section presents a simple form for selecting parking spots for occupancy test.
+            To find out more about this page check out the <a href="">help section</a>.
+        </p>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="deviceSelect">Device</label>
+                    <select class="form-control" id="deviceSelect">
+                        <option>Test device 1</option>
+                        <option>Device test 2</option>
+                        <option>Device Test 3</option>
+                        <option>Device Test 4?</option>
+                        <option>Postman device test</option>
+                        <option>Testerino memerino</option>
+                        <option>Final test</option>
+                        <option>Final test 2</option>
+                        <option>Final test 3</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label for="cameraSelect">Camera</label>
+                    <select class="form-control" id="cameraSelect">
+                        <option>Hello Camera</option>
+                        <option>Hello Camera 2</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 mt-4">
+                    <img src="{% static 'img/prototyping/parking_test_image.jpg' %}" class="d-block mx-auto"
+                         alt="live preview of the camera">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <button class="btn btn-primary btn-lg btn-block">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {# TODO:  Update the camera select based on the selected device #}
+        {# TODO: Retrieval of one frame from selected camera #}
+    </script>
 {% endblock %}
