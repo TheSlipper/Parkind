@@ -75,7 +75,7 @@
 
         function afterCameraRequest(arr) {
             let cameraSelectElem = document.getElementById('cameraSelect');
-            if (arr == null || arr === []) {
+            if (arr == null || arr.length === 0) {
                 cameraSelectElem.disabled = true;
                 cameraSelectElem.innerHTML = `<option value='None'>No cameras detected for the device</option>`;
                 return;
@@ -93,7 +93,7 @@
         }
 
         function afterDeviceRequest(arr) {
-            if (arr == null || arr === []) {
+            if (arr == null || arr.length === 0) {
                 let container = document.getElementById('detectionAreaViewContainer');
                 container.innerHTML = `<div class='row'><h1 class='text-danger'>No registered devices detected</h2></div>`;
                 return;
