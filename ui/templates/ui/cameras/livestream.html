@@ -30,15 +30,17 @@
 
     <script src="{% static 'js/rest/crud.js' %}"></script>
     <script>
-         {#TODO:  Update the camera select based on the selected device#}
-         {#TODO: Retrieval of one frame from selected camera#}
+        {#TODO: If more than one camera from a given device - fix that bug #}
+        {#TODO: Retrieval of one frame from selected camera #}
+
         function afterCameraRequest(arr) {
             let cameraSelectElem = document.getElementById('cameraSelect');
-            if (arr == null || arr === []) {
+            if (arr == null || arr.length === 0) {
                 cameraSelectElem.disabled = true;
                 cameraSelectElem.innerHTML = `<option value='None'>No cameras detected for the device</option>`;
                 return;
             }
+            cameraSelectElem.disabled = false;
             let deviceId = parseInt(document.getElementById('deviceSelect').value);
             let selectContent = "";
             arr.forEach(camera => {
@@ -65,6 +67,9 @@
         }
 
         window.onload = function () {
+            document.getElementById('deviceSelect').addEventListener('change', (event) => {
+                requestList('camera', afterCameraRequest);
+            });
             requestList('device', afterDeviceRequest);
         };
     </script>
