@@ -1,5 +1,29 @@
 {% extends 'ui/application_layout.html' %}
 
 {% block content %}
-<h1>General Settings</h1>
+    <div class="container-fluid">
+        <h1 class="h3 mb-1 text-gray-800">Camera Settings</h1>
+        <p class="mb-4">
+            General settings concerning the connected cameras.
+            To find out more about this page check out the <a href="">help section</a>.
+        </p>
+        <br>
+        <div class="container">
+            <div class="row pt-3 pb-3 border rounded bg-white">
+                <div class="col-sm-12">
+                    <strong>Video settings</strong><br/>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="oneFpsLimit" checked>
+                        <label class="custom-control-label" for="oneFpsLimit">1FPS Limit</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-sm-12">
+                    <button class="btn btn-primary btn-lg btn-block">Save settings</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}

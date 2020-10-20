@@ -12,24 +12,11 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="deviceSelect">Device</label>
-                    <select class="form-control" id="deviceSelect">
-                        <option>Test device 1</option>
-                        <option>Device test 2</option>
-                        <option>Device Test 3</option>
-                        <option>Device Test 4?</option>
-                        <option>Postman device test</option>
-                        <option>Testerino memerino</option>
-                        <option>Final test</option>
-                        <option>Final test 2</option>
-                        <option>Final test 3</option>
-                    </select>
+                    <select class="form-control" id="deviceSelect"></select>
                 </div>
                 <div class="col-sm-6">
                     <label for="cameraSelect">Camera</label>
-                    <select class="form-control" id="cameraSelect">
-                        <option>Hello Camera</option>
-                        <option>Hello Camera 2</option>
-                    </select>
+                    <select class="form-control" id="cameraSelect"></select>
                 </div>
             </div>
             <div class="row">
@@ -41,8 +28,44 @@
         </div>
     </div>
 
+    <script src="{% static 'js/rest/crud.js' %}"></script>
     <script>
-        {# TODO:  Update the camera select based on the selected device #}
-        {# TODO: Retrieval of one frame from selected camera #}
+         {#TODO:  Update the camera select based on the selected device#}
+         {#TODO: Retrieval of one frame from selected camera#}
+        function afterCameraRequest(arr) {
+            let cameraSelectElem = document.getElementById('cameraSelect');
+            if (arr == null || arr === []) {
+                cameraSelectElem.disabled = true;
+                cameraSelectElem.innerHTML = `<option value='None'>No cameras detected for the device</option>`;
+                return;
+            }
+            let deviceId = parseInt(document.getElementById('deviceSelect').value);
+            let selectContent = "";
+            arr.forEach(camera => {
+                if (camera.id === deviceId)
+                    selectContent += `<option value="${camera.id}">${camera.name}</option>`;
+            });
+            cameraSelectElem.innerHTML = selectContent;
+            cameraSelectElem.selectedIndex = "0";
+        }
+
+        function afterDeviceRequest(arr) {
+            if (arr == null || arr === []) {
+                let container = document.getElementById('detectionAreaViewContainer');
+                container.innerHTML = `<div class='row'><h1 class='text-danger'>No registered devices detected</h2></div>`;
+                return;
+            }
+            let selectContent = "";
+            arr.forEach(device => selectContent += `<option value="${device.id}">${device.name}</option>`);
+
+            let deviceSelectElem = document.getElementById('deviceSelect');
+            deviceSelectElem.innerHTML = selectContent;
+            deviceSelectElem.selectedIndex = "0";
+            requestList('camera', afterCameraRequest);
+        }
+
+        window.onload = function () {
+            requestList('device', afterDeviceRequest);
+        };
     </script>
 {% endblock %}

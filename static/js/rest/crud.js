@@ -13,11 +13,11 @@ function requestList(entityType, finishingFunction) {
     request.open('GET', finalUrl, true);
     request.onreadystatechange = function () {
         let deviceArr = null;
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            deviceArr = JSON.parse(this.responseText);
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200)
+                deviceArr = JSON.parse(this.responseText);
+            finishingFunction(deviceArr);
         }
-
-        finishingFunction(deviceArr);
     };
 
     request.send(null);
