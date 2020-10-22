@@ -77,6 +77,51 @@ def device_request_delete(request, id):
     return HttpResponse(status=200)
 
 
+# Detection area CRUD
+@api_view(['POST'])
+def detection_area_create(request):
+    serializer = DetectionAreaSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return HttpResponse(status=201)
+
+    return HttpResponse(status=400)
+
+
+@api_view(['GET'])
+def detection_area_detail(request, id):
+    detection_area = ParkingArea.objects.get(id=id)
+    serializer = DetectionAreaSerializer(detection_area, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def detection_area_list(request):
+    detection_areas = ParkingArea.objects.all()
+    serializer = DetectionAreaSerializer(detection_areas, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['PUT'])
+def detection_area_update(request, id):
+    detection_area = ParkingArea.objects.get(id=id)
+    serializer = DetectionAreaSerializer(instance=detection_area, data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return HttpResponse(status=200)
+
+    return HttpResponse(status=400)
+
+
+@api_view(['DELETE'])
+def detection_area_delete(request, id):
+    detection_area = ParkingArea.objects.get(id=id)
+    detection_area.delete()
+    return HttpResponse(status=200)
+
+
 # Camera CRUD
 @api_view(['POST'])
 def camera_create(request):

@@ -14,6 +14,12 @@ class DeviceRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class DetectionAreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParkingArea
+        fields = '__all__'
+
+
 class CameraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Camera
