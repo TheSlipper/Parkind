@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="deviceSelect">Device</label>
-                    <select class="form-control" id="deviceSelect"></select>
+                    <select class="form-control" id="deviceSelect" onchange=""></select>
                 </div>
                 <div class="col-sm-6">
                     <label for="cameraSelect">Camera</label>
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="row mb-0">
-                <h2>Add a new area</h2>
+                <h2>AddregisterArea a new area</h2>
             </div>
             <div class="row">
                 <div class="col-sm-12">
@@ -75,8 +75,11 @@
         let places = [];
 
         function afterAreasRequest(arr) {
-            if (arr != null && arr.length !== 0)
-                places = arr;
+            if (arr != null && arr.length !== 0) {
+                let camId = parseInt(document.getElementById('cameraSelect').value);
+                debugger;
+                places = arr.filter(place => place.camera === camId);
+            }
             else
                 places = [];
             drawImageWithSelectedAreas();
@@ -160,29 +163,38 @@
         }
 
         function deleteArea(btn, dbId) {
-            let row = btn.parentNode.parentNode;
-
-            deleteArea('detection_area', dbId, getCookie('csrftoken'), function (result) {
+            requestDelete('detection_area', dbId, getCookie('csrftoken'), function (result) {
+                debugger;
                 if (result) {
-                    row.parentNode.removeChild(row);
-                    places = places.filter(area => area.id !== dbId);
+                    places = places.filter(place => place.id !== dbId);
+                    drawImageWithSelectedAreas();
+                    updateTableWithSelectedAreas();
+                } else {
+                    console.log('Error occurred while trying to delete a detection area');
                 }
             });
-            drawImageWithSelectedAreas();
-            updateTableWithSelectedAreas();
         }
 
         function registerArea() {
             let obj = {
-                id: places[places.length - 1].id + 1, // TODO: Extract the newest id from API instead
+                // id: places[places.length - 1].id + 1, // TODO: Extract the newest id from API instead
+                camera: parseInt(document.getElementById('cameraSelect').value),
                 x: document.getElementById('x1').value,
                 y: document.getElementById('y1').value,
                 width: document.getElementById('w').value,
                 height: document.getElementById('h').value
             };
-            places.push(obj);
-            updateTableWithSelectedAreas();
-            drawImageWithSelectedAreas();
+            let csrftoken = getCookie('csrftoken');
+            requestCreate('detection_area', obj, csrftoken, function (res, body) {
+                if (res) {
+                    obj.id = parseInt(body);
+                    places.push(obj);
+                    updateTableWithSelectedAreas();
+                    drawImageWithSelectedAreas();
+                } else {
+                    console.log("Error occurred while trying to upload the new detection area");
+                }
+            });
             // TODO: Register in database via the API
         }
 

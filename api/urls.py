@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     # Device endpoints
     path('device/list', views.device_list, name='device_list'),
@@ -17,6 +18,7 @@ urlpatterns = [
     # ParkingArea
     path('detection_area/list', views.detection_area_list, name='detection_area_list'),
     path('detection_area/detail/<int:id>/', views.detection_area_detail, name='detection_area_detail'),
+    path('detection_area/create', views.detection_area_create, name='detection_area_list'),
     path('detection_area/delete/<int:id>/', views.detection_area_delete, name='detection_area_delete'),
 
     # Camera endpoints

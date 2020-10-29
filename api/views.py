@@ -83,8 +83,8 @@ def detection_area_create(request):
     serializer = DetectionAreaSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save()
-        return HttpResponse(status=201)
+        obj = serializer.save()
+        return HttpResponse(str(obj.id), content_type='text/plain', status=201)
 
     return HttpResponse(status=400)
 
@@ -101,18 +101,6 @@ def detection_area_list(request):
     detection_areas = ParkingArea.objects.all()
     serializer = DetectionAreaSerializer(detection_areas, many=True)
     return Response(serializer.data)
-
-
-@api_view(['PUT'])
-def detection_area_update(request, id):
-    detection_area = ParkingArea.objects.get(id=id)
-    serializer = DetectionAreaSerializer(instance=detection_area, data=request.data)
-
-    if serializer.is_valid():
-        serializer.save()
-        return HttpResponse(status=200)
-
-    return HttpResponse(status=400)
 
 
 @api_view(['DELETE'])
