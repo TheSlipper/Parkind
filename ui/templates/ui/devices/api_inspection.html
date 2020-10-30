@@ -1,4 +1,5 @@
 {% extends 'ui/application_layout.html' %}
+{% load static %}
 
 {% block content %}
     <div class="container-fluid">
@@ -15,149 +16,194 @@
                     <p>Information on registered devices.</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="card shadow border-bottom-success">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Device 1</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td>Device ID:</td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td>IPv4 Address:</td>
-                                    <td>192.168.1.101</td>
-                                </tr>
-                                <tr>
-                                    <td>Created on:</td>
-                                    <td>16/10/2020</td>
-                                </tr>
-                                <tr>
-                                    <td>Created By:</td>
-                                    <td>noir</td>
-                                </tr>
-                                <tr>
-                                    <td>Total requests:</td>
-                                    <td>21</td>
-                                </tr>
-                                <tr>
-                                    <td>Logging:</td>
-                                    <td class="text-success">On</td>
-                                </tr>
-                                <tr>
-                                    <td>Connection status:</td>
-                                    <td class="text-success">Connected</td>
-                                </tr>
-                                <tr>
-                                    <td>Streaming:</td>
-                                    <td class="text-success">On</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="card shadow border-bottom-danger">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Device 2</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td>Device ID:</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>IPv4 Address:</td>
-                                    <td>192.168.1.102</td>
-                                </tr>
-                                <tr>
-                                    <td>Created on:</td>
-                                    <td>16/10/2020</td>
-                                </tr>
-                                <tr>
-                                    <td>Created By:</td>
-                                    <td>noir</td>
-                                </tr>
-                                <tr>
-                                    <td>Total requests:</td>
-                                    <td>14</td>
-                                </tr>
-                                <tr>
-                                    <td>Logging:</td>
-                                    <td class="text-success">On</td>
-                                </tr>
-                                <tr>
-                                    <td>Connection status:</td>
-                                    <td class="text-danger">Disconnected</td>
-                                </tr>
-                                <tr>
-                                    <td>Streaming:</td>
-                                    <td class="text-danger">Off</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="card shadow border-bottom-warning">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Device 3</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td>Device ID:</td>
-                                    <td>3</td>
-                                </tr>
-                                <tr>
-                                    <td>IPv4 Address:</td>
-                                    <td>192.168.1.103</td>
-                                </tr>
-                                <tr>
-                                    <td>Created on:</td>
-                                    <td>16/10/2020</td>
-                                </tr>
-                                <tr>
-                                    <td>Created By:</td>
-                                    <td>noir</td>
-                                </tr>
-                                <tr>
-                                    <td>Total requests:</td>
-                                    <td>16</td>
-                                </tr>
-                                <tr>
-                                    <td>Logging:</td>
-                                    <td class="text-danger">Off</td>
-                                </tr>
-                                <tr>
-                                    <td>Connection status:</td>
-                                    <td class="text-success">Connected</td>
-                                </tr>
-                                <tr>
-                                    <td>Streaming:</td>
-                                    <td class="text-warning">Partial</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <strong>Warnings:</strong>
-                            <ul>
-                                <li>Not all connected cameras are streaming</li>
-                                <li>Receiving less than 1 frame per second - may result in obsolete data retrieval</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <span id="device-rows">
+{#                <div class="row">#}
+{#                    <div class="col-sm-4">#}
+{#                        <div class="card shadow border-bottom-success">#}
+{#                            <div class="card-header py-3">#}
+{#                                <h6 class="m-0 font-weight-bold text-primary">Device 1</h6>#}
+{#                            </div>#}
+{#                            <div class="card-body">#}
+{#                                <table class="table table-bordered" width="100%" cellspacing="0">#}
+{#                                    <tbody>#}
+{#                                    <tr>#}
+{#                                        <td>Device ID:</td>#}
+{#                                        <td>1</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>IPv4 Address:</td>#}
+{#                                        <td>192.168.1.101</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Created on:</td>#}
+{#                                        <td>16/10/2020</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Created By:</td>#}
+{#                                        <td>noir</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Total requests:</td>#}
+{#                                        <td>21</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Logging:</td>#}
+{#                                        <td class="text-success">On</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Connection status:</td>#}
+{#                                        <td class="text-success">Connected</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Streaming:</td>#}
+{#                                        <td class="text-success">On</td>#}
+{#                                    </tr>#}
+{#                                    </tbody>#}
+{#                                </table>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-sm-4">#}
+{#                        <div class="card shadow border-bottom-danger">#}
+{#                            <div class="card-header py-3">#}
+{#                                <h6 class="m-0 font-weight-bold text-primary">Device 2</h6>#}
+{#                            </div>#}
+{#                            <div class="card-body">#}
+{#                                <table class="table table-bordered" width="100%" cellspacing="0">#}
+{#                                    <tbody>#}
+{#                                    <tr>#}
+{#                                        <td>Device ID:</td>#}
+{#                                        <td>2</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>IPv4 Address:</td>#}
+{#                                        <td>192.168.1.102</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Created on:</td>#}
+{#                                        <td>16/10/2020</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Created By:</td>#}
+{#                                        <td>noir</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Total requests:</td>#}
+{#                                        <td>14</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Logging:</td>#}
+{#                                        <td class="text-success">On</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Connection status:</td>#}
+{#                                        <td class="text-danger">Disconnected</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Streaming:</td>#}
+{#                                        <td class="text-danger">Off</td>#}
+{#                                    </tr>#}
+{#                                    </tbody>#}
+{#                                </table>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-sm-4">#}
+{#                        <div class="card shadow border-bottom-warning">#}
+{#                            <div class="card-header py-3">#}
+{#                                <h6 class="m-0 font-weight-bold text-primary">Device 3</h6>#}
+{#                            </div>#}
+{#                            <div class="card-body">#}
+{#                                <table class="table table-bordered" width="100%" cellspacing="0">#}
+{#                                    <tbody>#}
+{#                                    <tr>#}
+{#                                        <td>Device ID:</td>#}
+{#                                        <td>3</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>IPv4 Address:</td>#}
+{#                                        <td>192.168.1.103</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Created on:</td>#}
+{#                                        <td>16/10/2020</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Created By:</td>#}
+{#                                        <td>noir</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Total requests:</td>#}
+{#                                        <td>16</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Logging:</td>#}
+{#                                        <td class="text-danger">Off</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Connection status:</td>#}
+{#                                        <td class="text-success">Connected</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <td>Streaming:</td>#}
+{#                                        <td class="text-warning">Partial</td>#}
+{#                                    </tr>#}
+{#                                    </tbody>#}
+{#                                </table>#}
+{#                                <strong>Warnings:</strong>#}
+{#                                <ul>#}
+{#                                    <li>Not all connected cameras are streaming</li>#}
+{#                                    <li>Receiving less than 1 frame per second - may result in obsolete data retrieval</li>#}
+{#                                </ul>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+            </span>
         </div>
         <hr class="mb-4">
+        {#        <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">#}
+        <script src="{% static 'js/rest/crud.js' %}"></script>
+        <script defer>
+            const ADD_URL = "<a href=\"{% url 'devices_add_form' %}\" class='btn btn-success btn-block'>Add New</a>";
+            window.onload = function () {
+                function afterRequest(arr) {
+                    if (arr == null || arr === []) {
+                        return;
+                    }
+                    let rowsContent = '';
+                    let i = 0;
+                    arr.forEach(device => {
+                        if (i == 0)
+                            rowsContent += '<div class="row mt-3">';
+                        {# TODO: Success/warning/danger on bottom of cards, connection status, streaming, total requests #}
+                        {# TODO: Consider pagination #}
+                        rowsContent += `<div class="col-sm-4"><div class="card shadow border-bottom-success"><div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">${device.name}</h6></div><div class="card-body">
+                            <table class="table table-bordered" width="100%" cellspacing="0"><tbody><tr><td>Device ID:</td>
+                            <td>${device.id}</td></tr><tr><td>IPv4 Address:</td><td>${device.ip_address}</td></tr><tr>
+                            <td>Created on:</td><td>${device.created_on}</td></tr><tr><td>Created By:</td><td>${device.created_by}</td>
+                            </tr><tr><td>Total requests:</td><td>21</td></tr><tr><td>Logging:</td>
+                            <td class="text-success">${device.request_logging ? "On" : "Off"}</td></tr><tr><td>Connection status:</td>
+                            <td class="text-success">Connected</td></tr><tr><td>Streaming:</td><td class="text-success">On</td>
+                            </tr></tbody></table></div></div></div>`;
+                        i += 1;
+                        if (i == 3) {
+                            rowsContent += '</div>';
+                            i = 0;
+                        }
+                    });
+
+                    document.getElementById('device-rows').innerHTML = rowsContent;
+                    {#tableContent += `<tr><td>${device.id}</td><td>${device.name}</td>#}
+                    {#<td>${device.ip_address}</td><td>${device.created_on}</td><td>${device.created_by}</td></tr>`);#}
+                    {#document.getElementById('content-body').innerHTML = tableContent;#}
+                    {#document.getElementById('loading-spinner').innerHTML = ADD_URL;#}
+                }
+
+                requestList('device', afterRequest);
+                {#deviceList(afterRequest);#}
+            };
+        </script>
     </div>
 {% endblock %}
