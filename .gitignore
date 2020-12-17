@@ -115,3 +115,5 @@ media/
 # !**/migrations/__init__.py
 
 .idea/
+static/css
+static/vendor

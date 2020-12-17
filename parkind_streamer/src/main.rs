@@ -11,9 +11,15 @@ use clap::Clap;
 #[derive(Clap)]
 #[clap(version = "0.0.1", author = "Kornel Domeradzki <korneldomeradzki1@gmail.com>")]
 struct Opts {
+    /// path to the configuration file
     #[clap(short, long)]
     config: String,
-
+    /// enables local image preprocessing
+    #[clap(short, long, default=false)]
+    preprocessing: bool,
+    /// enables connection requests from sources unspecified in config file
+    #[clap(short, long, default=false)]
+    allow_untrusted: bool,
 }
 
 fn run() -> opencv::Result<()> {
