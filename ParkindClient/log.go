@@ -17,9 +17,9 @@ const (
 
 func log(a []string) {
 	t := time.Now()
-	fmt.Printf("[%s]: ", t.Format("02/01/2006 15:04:05"))
+	fmt.Printf("[%s]:", t.Format("02/01/2006 15:04:05"))
 	for _, foo := range a {
-		fmt.Print(foo)
+		fmt.Print(" ", foo)
 	}
 	fmt.Println()
 }
@@ -30,6 +30,10 @@ func normalLog(a ...string) {
 }
 
 func infoLog(a ...string) {
+	if !args.verbosity {
+		return
+	}
+
 	fmt.Printf(colorPurple)
 	log(a)
 }

@@ -33,6 +33,8 @@ func setUpRuntimeArgs() {
 func main() {
 	// Set up runtime arguments or stop execution if not satisfied
 	setUpRuntimeArgs()
+	// TODO: Create a streaming go routine and start it here
+
 	// Set up a server and start it
 	server := createHttpServer()
 	err := server.ListenAndServe()
