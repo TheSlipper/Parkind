@@ -63,7 +63,6 @@ func invalidUrlHandle(rw http.ResponseWriter, req *http.Request) {
 
 // Url handle that checks if the connection can be established with the given data
 func connectionTestHandle(rw http.ResponseWriter, req *http.Request, p *parkindClientHandler) {
-	// TODO: Change this to if token is not true (implement the condition)
 	// as of now it'll be the default until token generation is implemented
 	fail := func() {
 		rw.WriteHeader(http.StatusForbidden)
