@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // Handler of the client's http server
 type parkindClientHandler struct {
+	token uuid.UUID
 }
 
 // Implementation of the http.Handler interface. Used as a simple router that calls handlers that correspond to given urls
@@ -24,7 +28,20 @@ func (p parkindClientHandler) ServeHTTP(rw http.ResponseWriter, req *http.Reques
 
 // Sets up the http server of the parkind client and returns it
 func createHttpServer() (s *http.Server) {
+	// Create an http handler
 	handler := parkindClientHandler{}
+
+	// Generate a connection token for this session
+	var err error
+	handler.token, err = uuid.NewRandom()
+	if err != nil {
+		errorLog(err.Error())
+		os.Exit(3)
+	} else {
+		infoLog("Successfully generated a new connection token:", token.String())
+	}
+
+	// Set up the server
 	s = &http.Server{
 		Addr:           ":8080",
 		Handler:        handler,
@@ -32,6 +49,8 @@ func createHttpServer() (s *http.Server) {
 		WriteTimeout:   time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+	infoLog("Server listening at 127.0.0.1:8080")
+
 	return s
 }
 
