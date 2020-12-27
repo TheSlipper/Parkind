@@ -17,10 +17,10 @@ type parkindClientHandler struct {
 // Implementation of the http.Handler interface. Used as a simple router that calls handlers that correspond to given urls
 func (p parkindClientHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	url := req.URL.String()
-	infoLog(url)
+	infoLog("Received a", req.Method, "request at", url)
 
 	if url == "/check/" {
-		connectionTestHandle(rw, req)
+		connectionTestHandle(rw, req, &p)
 	} else {
 		invalidUrlHandle(rw, req)
 	}
@@ -38,7 +38,7 @@ func createHttpServer() (s *http.Server) {
 		errorLog(err.Error())
 		os.Exit(3)
 	} else {
-		infoLog("Successfully generated a new connection token:", token.String())
+		infoLog("Successfully generated a new connection token:", handler.token.String())
 	}
 
 	// Set up the server
@@ -62,13 +62,34 @@ func invalidUrlHandle(rw http.ResponseWriter, req *http.Request) {
 }
 
 // Url handle that checks if the connection can be established with the given data
-func connectionTestHandle(rw http.ResponseWriter, req *http.Request) {
+func connectionTestHandle(rw http.ResponseWriter, req *http.Request, p *parkindClientHandler) {
 	// TODO: Change this to if token is not true (implement the condition)
 	// as of now it'll be the default until token generation is implemented
-	if true {
+	fail := func() {
 		rw.WriteHeader(http.StatusForbidden)
 		fmt.Fprintf(rw, "<h1>Error 403: Forbidden</h1>")
-	} else {
-		// TODO:
+		infoLog("A connection test request failed")
 	}
+
+	// If invalid method then fail
+	if req.Method != "POST" {
+		fail()
+		return
+	}
+
+	// if unable to get the form arguments then fail
+	if err := req.ParseForm(); err != nil {
+		fail()
+		return
+	}
+
+	// get the token and compare it with the local one
+	// infoLog("Local uuid:", p.token.String(), "\n\tReceived form:", req.Pos)
+	token := req.FormValue("token")
+	if token == "" || token != p.token.String() {
+		fail()
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
 }
