@@ -27,4 +27,7 @@ urlpatterns = [
     path('camera/create', views.camera_create, name='camera_create'),
     path('camera/update/<int:id>/', views.camera_update, name='camera_update'),
     path('camera/delete/<int:id>/', views.camera_delete, name='camera_delete'),
+
+    # Frame endpoints (used for streaming image)
+    path('frame/<int:dev_id>/<int:cam_id>', views.frame_upload, name='frame_upload')
 ]

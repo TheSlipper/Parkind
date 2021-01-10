@@ -2,9 +2,13 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .serializers import *
+
+import numpy as np
+import cv2
 
 
 # Device CRUD
@@ -153,3 +157,15 @@ def camera_delete(request, id):
     camera = Camera.objects.get(id=id)
     camera.delete()
     return HttpResponse(status=200)
+
+
+# Frame endpoints
+@csrf_exempt
+def frame_upload(request, dev_id, cam_id):
+    print("Received a frame")
+    # print()
+
+    img = cv2.imdecode(np.fromstring(request.body, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
+    cv2.imwrite("test.jpg", img)
+
+    return HttpResponse(status=202)
