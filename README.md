@@ -20,7 +20,7 @@ git clone https://github.com/TheSlipper/Parkind.git
 
 ```
 cd Parkind/
-tensorman run --gpu --python3 bash
+sudo tensorman run --gpu --python3 bash
 pip install --upgrade pip
 python -m pip install Django
 pip install djangorestframework
@@ -28,7 +28,14 @@ pip install markdown
 pip install django-filter  
 ```
 
-4. Run the server and exit after finishing the execution
+4. Set up the server
+
+```
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+5. Run the server and exit after finishing the execution
 
 ```
 python manage.py runserver # press ctrl+c to exit it
