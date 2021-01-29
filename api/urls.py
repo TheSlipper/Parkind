@@ -9,6 +9,7 @@ urlpatterns = [
     path('device/create/<str:token>/', views.device_create, name='device_create'),
     path('device/update/<int:id>/', views.device_update, name='device_update'),
     path('device/delete/<int:id>/', views.device_delete, name='device_delete'),
+    path('device/check/', views.device_check, name='device_check'),
 
     # Device request history
     path('device_request/list', views.device_request_list, name='device_request_list'),
@@ -29,5 +30,6 @@ urlpatterns = [
     path('camera/delete/<int:id>/', views.camera_delete, name='camera_delete'),
 
     # Frame endpoints (used for streaming image)
+    path('ai/init', views.init_ai, name='init_ai'),
     path('frame/<int:dev_id>/<int:cam_id>', views.frame_upload, name='frame_upload')
 ]

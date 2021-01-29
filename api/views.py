@@ -3,13 +3,17 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
+from threading import Thread
 
 from .models import *
 from .serializers import *
+from ../ai import * as ai
+
 
 import numpy as np
 import cv2
 
+th = None
 
 # Device CRUD
 @api_view(['POST'])
@@ -58,6 +62,20 @@ def device_delete(request, id):
     device.delete()
     return HttpResponse(status=200)
 
+
+@csrf_exempt
+def device_check(request):
+    # get the data
+    post_data = request.body.decode('utf-8').split('&')
+    url = post_data[0]
+    token = post_data[1]
+    
+    # Send to the device
+    resp = requests.post(url, data = 'token=' + token)
+
+    print(resp.text)
+
+    pass
 
 # Device request RD
 @api_view(['GET'])
@@ -159,13 +177,55 @@ def camera_delete(request, id):
     return HttpResponse(status=200)
 
 
-# Frame endpoints
+# Frame/AI endpoints
 @csrf_exempt
-def frame_upload(request, dev_id, cam_id):
-    print("Received a frame")
-    # print()
+def init_ai(request):
+    if th == None:
+        return HttpResponse(status=202)
+    
+    # Set up objects
+    model_path = ""
+    dev_objs = Device.objects.all()
+    cam_objs = Camera.objects.all()
+    parea_objs = ParkingArea.objects.all()
+    devices = []
 
-    img = cv2.imdecode(np.fromstring(request.body, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
-    cv2.imwrite("test.jpg", img)
+    for dev in dev_objs:
+        cameras = []
+        for cam in cam_objs:
+            if cam.parent_device == dev.id:
+                areas = []
+                for area in parea_objs:
+                    if area.camera == cam.id:
+                        areas.append(ai.DetectionArea(area.id, None, False))
+                camera = ai.Camera(cam.id, areas)
+                cameras.append(camera)
+        device = ai.device(dev.id, cameras)
+        devices.append(device)
+
+    # Set up the thread and run it
+    th = Thread(target = ai.ai_thread_start, args = ("ai_data/models/mobilenet", devices))
+    th.start()
 
     return HttpResponse(status=202)
+
+@csrf_exempt
+def frame_upload(request, dev_id, cam_id):
+    # Decode and save image to disk
+    img = cv2.imdecode(np.fromstring(request.body, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
+    f_name = str(dev_id) + "_" + str(cam_id) + "_" + datetime.now().strftime("%d/%m/%Y %H:%M:%S.jpg")
+    cv2.imwrite("ai_data/img/" + f_name, img)
+
+    # Get rectangle data
+    darea_objs = ParkingArea.objects.filter(camera=cam_id)
+    rects = []
+    for area in darea_objs:
+        rect = ai.Rect(area.x, area.y, area.width, area.height)
+        rects.append(rect)
+
+    # Update the frame for the AI module
+    res = ai.update_frame(img, dev_id, cam_id, detection_areas)
+    if res:
+        return HttpResponse(status=202)
+    else:
+        return HttpResponse(status=400)

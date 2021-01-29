@@ -76,7 +76,7 @@ def update_frame(img, dev_id, cam_id, rects):
 
     # If no device of those ids were detected or the rects are incorrect stop execution
     if camera == None or len(camera.areas) != len(rects):
-        return
+        return False
 
     # Load in the crops for the camera and reset occupancy for this 
     for i in range(0, len(rects)):
@@ -85,6 +85,7 @@ def update_frame(img, dev_id, cam_id, rects):
         camera.areas[i].occuppied = False
 
     d_mtx.release()
+    return True
 
 
 def add_dev(device):
@@ -93,7 +94,7 @@ def add_dev(device):
     d_mtx.release()
 
 
-def ai_thread_start(devices=None):
+def ai_thread_start(model_path = None, devices=None):
     
     if devices == None:
         print("No devices passed to the AI thread. Starting empty-handed")
