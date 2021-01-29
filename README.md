@@ -1,5 +1,47 @@
 # Parkind
 
+## Installation
+
+This section will describe deploying the Parkind system in a docker container with the use of [tensorman](https://support.system76.com/articles/use-tensorman/).
+
+1. Install docker and tensorman
+
+```
+sudo apt-get update && sudo apt-get install docker.io tensorman
+```
+
+2. Clone this repository
+
+```
+git clone https://github.com/TheSlipper/Parkind.git
+```
+
+3. Install the dependencies for the docker image
+
+```
+cd Parkind/
+sudo tensorman run --gpu --python3 bash
+pip install --upgrade pip
+python -m pip install Django
+pip install djangorestframework
+pip install markdown       
+pip install django-filter  
+```
+
+4. Set up the server
+
+```
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+5. Run the server and exit after finishing the execution
+
+```
+python manage.py runserver # press ctrl+c to exit it
+exit
+```
+
 ## Notice
 
 The project is still in the workings - most of the features are not implemented yet.
