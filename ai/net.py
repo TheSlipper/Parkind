@@ -1,7 +1,14 @@
+from tensorflow.keras import datasets
 import tensorflow as tf
+from threading import Thread, Lock
 import keras
 from keras import models
-from threading import Thread, Lock
+
+def import_model(folder_path):
+    # Load model
+    tf_model = keras.models.load_model(folder_path)
+    model = ParkindModel(tf_model)
+    return model
 
 
 def tweak_gpu():
@@ -11,7 +18,6 @@ def tweak_gpu():
     operations. Tested only with CUDA.
 
     """
-
     gpus = tf.config.experimental.list_physical_devices('GPU')
     if gpus:
         try:
@@ -70,34 +76,34 @@ def apply_classifier(base_model, class_count):
 class ParkindModel:
     """Container for Parkind ready binary detection tensorflow model"""
     
-    mutex = Lock()
-
     def __init__(self, tf_model=None, history=None):
-        mutex.acquire()
+        self.mutex = Lock()
+        self.mutex.acquire()
         self.Tf_model = tf_model
         self.History = history
-        mutex.release()
+        self.mutex.release()
 
-    def Train_net(dataset):
+    def Train_net(self, dataset):
         """Trains a neural network with the given dataset and returns history of training"""
-        mutex.acquire()
+        self.mutex.acquire()
 
         model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=base_learning_rate),
             loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
     
-        history = model.fit(dataset.Train_data, dataset.Train_labels, epochs=dataset.Epochs, 
+        self.history = model.fit(dataset.Train_data, dataset.Train_labels, epochs=dataset.Epochs, 
             validation_data=(dataset.Test_data, dataset.Test_labels))
-        mutex.release()
+        self.mutex.release()
 
-    def Detect(img):
-        mutex.acquire()
+    def Detect(self, img):
+        self.mutex.acquire()
         # TODO: Implement, remember about a mutex in this class
-        mutex.release()
+        
+        self.mutex.release()
 
-    def Save(path):
+    def Save(self, path):
         pass
 
-    def Load(path):
+    def Load(self, path):
         pass
 
 

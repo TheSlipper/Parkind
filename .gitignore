@@ -117,3 +117,5 @@ media/
 .idea/
 static/css
 static/vendor
+
+models/

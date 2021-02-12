@@ -1,11 +1,15 @@
 from threading import Thread, Lock
 import time
-import thread
 import cv2
+from ai.net import *
 
 # Device data and its mutex
 devs = []
 d_mtx = Lock()
+
+# Thread started
+th_started = False
+th = None
 
 
 class Rect:
@@ -57,7 +61,7 @@ def occupancy_list(dev_id, cam_id):
         if dev.id == dev_id:
             for cam in dev.cams:
                 if cam.id == cam_id:
-                    arr.append(area.id, area.occuppied)
+                    arr.append((area.id, area.occuppied))
 
     d_mtx.release()
     return arr
@@ -88,6 +92,11 @@ def update_frame(img, dev_id, cam_id, rects):
     return True
 
 
+def started():
+    global th_started
+    return th_started
+
+
 def add_dev(device):
     d_mtx.acquire()
     devs.append(device)
@@ -95,17 +104,19 @@ def add_dev(device):
 
 
 def ai_thread_start(model_path = None, devices=None):
-    
     if devices == None:
         print("No devices passed to the AI thread. Starting empty-handed")
     else:
         devs = devices
 
     # TODO: Create/Import a model
-    model = None
+    model = import_model(model_path)
+    print("Successfully loaded a model")
+    # print(model.)
+
     
     while True:
-        time.Sleep(0.2) # sleep for 0.2 sec
+        time.sleep(0.2) # sleep for 0.2 sec
         
         if len(devs) == 0:
             continue
@@ -119,3 +130,15 @@ def ai_thread_start(model_path = None, devices=None):
         d_mtx.release()
 
     pass
+
+
+def start(model_path = None, devices=None, gpu = False):
+    global th_started
+    global th
+    
+    if gpu:
+        tweak_gpu()
+    
+    th = Thread(target = ai_thread_start, args = (model_path, devices))
+    th.start()
+    th_started = True

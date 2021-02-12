@@ -7,7 +7,9 @@ from threading import Thread
 
 from .models import *
 from .serializers import *
-from ../ai import * as ai
+# from ai import * as ai
+import ai
+import _thread
 
 
 import numpy as np
@@ -180,8 +182,9 @@ def camera_delete(request, id):
 # Frame/AI endpoints
 @csrf_exempt
 def init_ai(request):
-    if th == None:
+    if ai.started():
         return HttpResponse(status=202)
+
     
     # Set up objects
     model_path = ""
@@ -200,14 +203,16 @@ def init_ai(request):
                         areas.append(ai.DetectionArea(area.id, None, False))
                 camera = ai.Camera(cam.id, areas)
                 cameras.append(camera)
-        device = ai.device(dev.id, cameras)
+        device = ai.Device(dev.id, cameras)
         devices.append(device)
 
     # Set up the thread and run it
-    th = Thread(target = ai.ai_thread_start, args = ("ai_data/models/mobilenet", devices))
-    th.start()
+    # TODO: Perhaps extract gpu from GET
+    # TODO: Load model from some settings or GET
+    ai.start("models/InceptionV3/", devices, True)
 
     return HttpResponse(status=202)
+
 
 @csrf_exempt
 def frame_upload(request, dev_id, cam_id):
