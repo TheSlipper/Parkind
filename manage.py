@@ -3,6 +3,8 @@
 import os
 import sys
 
+# docker run --gpus all -it --rm tensorflow/tensorflow:latest-gpu python manage.py runserver
+
 
 def main():
     """Run administrative tasks."""
