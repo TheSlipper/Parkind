@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import subprocess
 
 # from api.models import *
 
@@ -23,8 +23,14 @@ def dashboard(request):
     # https://nvidia.custhelp.com/app/answers/detail/a_id/3751/~/useful-nvidia-smi-queries
     #
     # Query for utilization of GPU: nvidia-smi --query-gpu=utilization.gpu --format=csv
+    res = subprocess.run(['nvidia-smi', '--query-gpu=temperature.gpu,utilization.gpu', '--format=csv'], stdout=subprocess.PIPE)
+    res_utf8 = res.stdout.decode('utf-8')
+    print(res_utf8)
+    res_splt = res_utf8.split('\n')[1].split(',')
+    temp = res_splt[0]
+    util = res_splt[1].replace(" ", "").replace("%", "")
 
-    return render(request, 'ui/dashboard.html')
+    return render(request, 'ui/dashboard.html', {'temp': temp, 'util': util})
 
 
 # Devices views
