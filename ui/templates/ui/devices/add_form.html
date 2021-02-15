@@ -81,8 +81,6 @@
             let foo = function (val) {
                 if (val)
                     window.location.replace("/ui/devices/manage/list");
-                else
-                    console.log("Well something crapped itself...");
             }
 
             let csrftoken = getCookie('csrftoken');
@@ -120,7 +118,7 @@
             console.log(endpoint);
             let url = "http://" + ip + '/check/';
             let request = new XMLHttpRequest();
-            let params = token + '&' url;
+            let params = token + '&' + url;
             request.open('POST', endpoint, true);
             request.setRequestHeader('Content-Type', 'text/plain');
             request.onreadystatechange = function () {

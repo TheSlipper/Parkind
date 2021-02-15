@@ -3,6 +3,7 @@ FROM tensorflow/tensorflow:latest-gpu
 # docker build --tag theslipper/parkind .
 # docker run -it --gpus=all --name parkind --network host -p 127.0.0.1:8000:8000/tcp theslipper/parkind
 # docker rm parkind
+# docker rmi theslipper/parkind
 
 RUN apt install libgl1-mesa-glx -y
 RUN apt-get install 'ffmpeg'\
@@ -11,8 +12,8 @@ RUN apt-get install 'ffmpeg'\
 
 RUN pip3 install --upgrade pip
 
-RUN pip3 install Django \
-    djangorestframework \
+RUN pip3 install Django==3.1.6
+RUN pip3 install djangorestframework \
     markdown \
     django-filter \
     keras \
