@@ -31,5 +31,7 @@ urlpatterns = [
 
     # Frame endpoints (used for streaming image)
     path('ai/init', views.init_ai, name='init_ai'),
+    path('ai/stop', views.stop_ai, name='stop_ai'),
+    path('ai/status', views.status_ai, name='status_ai'),    
     path('frame/<int:dev_id>/<int:cam_id>', views.frame_upload, name='frame_upload')
 ]

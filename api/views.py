@@ -7,7 +7,6 @@ from threading import Thread
 
 from .models import *
 from .serializers import *
-# from ai import * as ai
 import ai
 import _thread
 
@@ -15,7 +14,6 @@ import _thread
 import numpy as np
 import cv2
 
-th = None
 
 # Device CRUD
 @api_view(['POST'])
@@ -214,6 +212,20 @@ def init_ai(request):
     ai.start("ai/models/InceptionV3/", devices, True)
 
     return HttpResponse(status=202)
+
+
+@csrf_exempt
+def stop_ai(request):
+    ai.stop_exec()
+    return HttpResponse(200)
+
+
+@csrf_exempt
+def status_ai(request):
+    if ai.started():
+        return HttpResponse(status=201)
+    else:
+        return HttpResponse(status=205)
 
 
 @csrf_exempt

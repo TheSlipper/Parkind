@@ -41,10 +41,10 @@
                                     Artificial Intelligence Module
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <div class="row mt-2 ml-1">
-                                        <div class="btn btn-success btn-block col-6">
+                                    <div class="row mt-2 ml-1"  id="aimod-row">
+                                        {% comment %} <div class="btn btn-success btn-block col-6" onclick="turnOnAIMod()">
                                             Turn On
-                                        </div>
+                                        </div> {% endcomment %}
                                     </div>
                                 </div>
                             </div>
@@ -218,6 +218,58 @@
 
         <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
         <script src="{% static 'js/dashboard.js' %}"></script>
+        <script>
+            const when_turned_on = `<div class="btn btn-outline-danger btn-block col-6" onclick="turnOffAIMod()">Turn Off</div>`;
+            const when_turned_off = `<div class="btn btn-success btn-block col-6" onclick="turnOnAIMod()">Turn On</div>`;
+            const row = document.getElementById("aimod-row");
+
+            function turnOnAIMod() {
+                let url = "http://" + window.location.hostname + ":8000/api/ai/init";
+                let request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                request.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        if (this.status === 202) {
+                            row.innerHTML = when_turned_on;
+                        }
+                    }
+                };
+                request.send(null);
+            }
+
+            function turnOffAIMod() {
+                let url = "http://" + window.location.hostname + ":8000/api/ai/stop";
+                let request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                request.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        if (this.status === 200) {
+                            row.innerHTML = when_turned_off;
+                        }
+                    }
+                };
+                request.send(null);
+            }
+
+            function InitBtn() {
+                let url = "http://" + window.location.hostname + ":8000/api/ai/status";
+                let request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                request.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        console.log('hello:', this.status);
+                        if (this.status === 201) {
+                            row.innerHTML = when_turned_on;
+                        } else {
+                            row.innerHTML = when_turned_off;
+                        }
+                    }
+                };
+                request.send(null);
+            }
+
+            window.onload = InitBtn();
+        </script>
     </div>
 
 {% endblock %}

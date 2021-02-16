@@ -25,7 +25,6 @@ def dashboard(request):
     # Query for utilization of GPU: nvidia-smi --query-gpu=utilization.gpu --format=csv
     res = subprocess.run(['nvidia-smi', '--query-gpu=temperature.gpu,utilization.gpu', '--format=csv'], stdout=subprocess.PIPE)
     res_utf8 = res.stdout.decode('utf-8')
-    print(res_utf8)
     res_splt = res_utf8.split('\n')[1].split(',')
     temp = res_splt[0]
     util = res_splt[1].replace(" ", "").replace("%", "")

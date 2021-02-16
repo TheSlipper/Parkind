@@ -7,6 +7,7 @@ from ai.net import *
 # Device data and its mutex
 devs = []
 d_mtx = Lock()
+stop = False
 
 # Thread started
 th_started = False
@@ -48,6 +49,14 @@ class DetectionArea:
         self.id = id
         self.occuppied = occuppied
         self.rect = rect
+
+
+def stop_exec():
+    global d_mtx
+    global stop
+    d_mtx.acquire()
+    stop = True
+    d_mtx.release()
 
 
 def pull_warnings():
@@ -111,6 +120,8 @@ def add_dev(device):
 
 def ai_thread_start(model_path = None, devices=None):
     global devs
+    global th_started
+    global d_mtx
 
     if devices == None:
         print("No devices passed to the AI thread. Starting empty-handed")
@@ -140,6 +151,13 @@ def ai_thread_start(model_path = None, devices=None):
         
         if len(devs) == 0:
             continue
+
+        if stop:
+            d_mtx.acquire()
+            devs = []
+            th_started = False
+            d_mtx = Lock()
+            return
 
         # Detect for each area
         d_mtx.acquire()
