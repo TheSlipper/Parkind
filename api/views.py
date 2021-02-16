@@ -184,7 +184,6 @@ def camera_delete(request, id):
 def init_ai(request):
     if ai.started():
         return HttpResponse(status=202)
-
     
     # Set up objects
     model_path = ""
