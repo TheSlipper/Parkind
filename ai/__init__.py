@@ -63,15 +63,30 @@ def pull_warnings():
     return ""
 
 
-def occupancy_list(dev_id, cam_id):
+def occupancy_list(dev_id=None, cam_id=None):
+    global d_mtx
+    global devs
+    global th_started
+
     d_mtx.acquire()
-    
+
+    # If the thread hasn't started then just return an empty array
     arr = [] # (id, occupancy_state)
-    for dev in devs:
-        if dev.id == dev_id:
+    if not th_started:
+        d_mtx.release()
+        return []
+    elif dev_id == None and cam_id == None:
+        for dev in devs:
             for cam in dev.cams:
-                if cam.id == cam_id:
+                for area in cam.areas:
                     arr.append((area.id, area.occuppied))
+    else:
+        for dev in devs:
+            if dev.id == dev_id:
+                for cam in dev.cams:
+                    if cam.id == cam_id:
+                        for area in cam.areas:
+                            arr.append((area.id, area.occuppied))
 
     d_mtx.release()
     return arr

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import subprocess
+import ai
 
 # from api.models import *
 
@@ -29,7 +30,20 @@ def dashboard(request):
     temp = res_splt[0]
     util = res_splt[1].replace(" ", "").replace("%", "")
 
-    return render(request, 'ui/dashboard.html', {'temp': temp, 'util': util})
+    # Get the occupancy
+    occupancy = ai.occupancy_list()
+    if occupancy == []:
+        occupancy = 'N/A'
+    else:
+        cnt = 0
+        
+        for i in range(0, len(occupancy)):
+            id, occupancy_state = occupancy[i]
+            if occupancy_state:
+                cnt += 1
+        occupancy = cnt * 100 / len(occupancy)
+
+    return render(request, 'ui/dashboard.html', {'temp': temp, 'util': util, 'occupancy': occupancy})
 
 
 # Devices views
