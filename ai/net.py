@@ -3,6 +3,7 @@ import tensorflow as tf
 from threading import Thread, Lock
 import keras
 from keras import models
+from keras.preprocessing import image
 
 def import_model(folder_path):
     # Load model
@@ -76,42 +77,18 @@ def apply_classifier(base_model, class_count):
 class ParkindModel:
     """Container for Parkind ready binary detection tensorflow model"""
     
-    def __init__(self, tf_model=None, history=None):
-        self.mutex = Lock()
-        self.mutex.acquire()
+    def __init__(self, tf_model=None):
+        self.mtx = Lock()
+        self.mtx.acquire()
         self.Tf_model = tf_model
-        self.History = history
-        self.mutex.release()
+        self.mtx.release()
 
-    def Train_net(self, dataset):
-        """Trains a neural network with the given dataset and returns history of training"""
-        self.mutex.acquire()
-
-        model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=base_learning_rate),
-            loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
-    
-        self.history = model.fit(dataset.Train_data, dataset.Train_labels, epochs=dataset.Epochs, 
-            validation_data=(dataset.Test_data, dataset.Test_labels))
-        self.mutex.release()
-
-    def Detect(self, img):
-        self.mutex.acquire()
+    def Detect(self, f_name):
+        self.mtx.acquire()
         # TODO: Implement, remember about a mutex in this class
-        
-        self.mutex.release()
+        img = image.load_img(path=f_name)
+        img = image.img_to_array(img)
+        img_class = model.predict_classes(test_img)
+        print(img_class[0])
+        self.mtx.release()
 
-    def Save(self, path):
-        pass
-
-    def Load(self, path):
-        pass
-
-
-class Dataset:
-    """Contains a set of information used for """
-    def __init__(self, train_data, train_labels, test_data, test_labels, epochs):
-        self.Train_data = train_data
-        self.Train_labels = train_labels
-        self.Test_data = test_data
-        self.Test_labels = test_labels
-        self.Epochs = epochs

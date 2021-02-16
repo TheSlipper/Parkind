@@ -1,4 +1,5 @@
 from threading import Thread, Lock
+import copy
 import time
 import cv2
 from ai.net import *
@@ -40,13 +41,13 @@ class Camera:
 
 class DetectionArea:
     id = 0
-    img = None
     occuppied = False
+    rect = None
 
-    def __init__(self, id, img, occuppied):
+    def __init__(self, id, occuppied, rect):
         self.id = id
-        self.img = img
         self.occuppied = occuppied
+        self.rect = rect
 
 
 def pull_warnings():
@@ -67,26 +68,31 @@ def occupancy_list(dev_id, cam_id):
     return arr
 
 
-def update_frame(img, dev_id, cam_id, rects):
+def update_frame(img, dev_id, cam_id):
+    global d_mtx
+    global devs
+    global th_started
     d_mtx.acquire()
     
-    # Check if device and camera of this id exists
+    # Get the camera
     camera = None
-    for dev in devs:
-        if dev.id == dev_id:
-            for cam in dev.cams:
-                if cam.id == cam_id:
-                    camera = cam
-
+    for i in range(0, len(devs)):
+        if devs[i].id == dev_id:
+            for j in range(0, len(devs[i].cams)):
+                if devs[i].cams[j].id == cam_id:
+                    camera = devs[i].cams[j]
+                    break
+    
     # If no device of those ids were detected or the rects are incorrect stop execution
-    if camera == None or len(camera.areas) != len(rects):
+    if camera == None:
         return False
 
-    # Load in the crops for the camera and reset occupancy for this 
-    for i in range(0, len(rects)):
-        camera.areas[i].img = img[rects[i].y : rects[i].y+rects[i].h,
-            rects[i].x : rects[i].x+rects[i].w]
-        camera.areas[i].occuppied = False
+    # Load in the crops for the camera and reset occupancy for this
+    for i in range(0, len(camera.areas)):
+        rect = camera.areas[i].rect
+        c_img = img[rect.y : rect.y+rect.h, rect.x : rect.x+rects[i].w]
+        f_name = str(dev_id) + "_" + str(cam_id) + "_" + str(camera.areas[i].id) + ".jpg"
+        cv2.imwrite("static/img/recordings/crops/" + f_name, c_img)
 
     d_mtx.release()
     return True
@@ -104,17 +110,31 @@ def add_dev(device):
 
 
 def ai_thread_start(model_path = None, devices=None):
+    global devs
+
     if devices == None:
         print("No devices passed to the AI thread. Starting empty-handed")
     else:
-        devs = devices
+        devs = copy.deepcopy(devices)
 
     # TODO: Create/Import a model
     model = import_model(model_path)
     print("Successfully loaded a model")
-    # print(model.)
 
+    # Log how many entities registered
+    dev_cnt = len(devs)
+    cams_cnt = 0
+    areas_cnt = 0
+    for dev in devs:
+        for cam in dev.cams:
+            cams_cnt += 1
+            for area in cam.areas:
+                areas_cnt += 1
     
+    print("AI Module registered: ", dev_cnt, " devices, ", cams_cnt, " cameras and ", areas_cnt, " areas.")
+    print("AI Module is up and running...")
+
+    # TODO: Time it correctly so that each run actually lasts a second
     while True:
         time.sleep(0.2) # sleep for 0.2 sec
         
@@ -126,10 +146,10 @@ def ai_thread_start(model_path = None, devices=None):
         for dev in devs:
             for cam in dev.cams:
                 for area in cam.areas:
-                    area.occuppied = model.Detect(area.img)
+                    f_name = "static/img/recordings/crops/" + str(dev.id) + "_" + str(cam.id) + "_"
+                    f_name = f_name + str(area.id) + ".jpg"
+                    area.occuppied = model.Detect(f_name)
         d_mtx.release()
-
-    pass
 
 
 def start(model_path = None, devices=None, gpu = False):

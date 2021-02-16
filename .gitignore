@@ -118,4 +118,5 @@ media/
 static/css
 static/vendor
 
-models/
+ai/models/
+ai/dataset/

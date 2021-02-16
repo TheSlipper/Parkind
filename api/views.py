@@ -189,27 +189,30 @@ def init_ai(request):
     # Set up objects
     model_path = ""
     dev_objs = Device.objects.all()
-    cam_objs = Camera.objects.all()
-    parea_objs = ParkingArea.objects.all()
     devices = []
 
     for dev in dev_objs:
         cameras = []
+        cam_objs = Camera.objects.filter(parent_device=dev.id)
+
         for cam in cam_objs:
-            if cam.parent_device == dev.id:
-                areas = []
-                for area in parea_objs:
-                    if area.camera == cam.id:
-                        areas.append(ai.DetectionArea(area.id, None, False))
-                camera = ai.Camera(cam.id, areas)
-                cameras.append(camera)
-        device = ai.Device(dev.id, cameras)
+            areas = []
+            area_objs = ParkingArea.objects.filter(camera=cam.id)
+
+            for area in area_objs:
+                rect = ai.Rect(area.x, area.y, area.width, area.height)
+                areas.append(ai.DetectionArea(int(area.id), False, rect))
+                
+            camera = ai.Camera(int(cam.parent_device_id), areas)
+            cameras.append(camera)
+        
+        device = ai.Device(int(dev.id), cameras)
         devices.append(device)
 
     # Set up the thread and run it
     # TODO: Perhaps extract gpu from GET
     # TODO: Load model from some settings or GET
-    ai.start("models/InceptionV3/", devices, True)
+    ai.start("ai/models/InceptionV3/", devices, True)
 
     return HttpResponse(status=202)
 
@@ -218,19 +221,13 @@ def init_ai(request):
 def frame_upload(request, dev_id, cam_id):
     # Decode and save image to disk
     img = cv2.imdecode(np.fromstring(request.body, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
-    f_name = str(dev_id) + "_" + str(cam_id) + "_" + datetime.now().strftime("%d/%m/%Y %H:%M:%S.jpg")
-    cv2.imwrite("ai_data/img/" + f_name, img)
+    f_name = str(dev_id) + "_" + str(cam_id) + ".jpg"
+    cv2.imwrite("static/img/recordings/fulls/" + f_name, img)
 
-    # Get rectangle data
-    darea_objs = ParkingArea.objects.filter(camera=cam_id)
-    rects = []
-    for area in darea_objs:
-        rect = ai.Rect(area.x, area.y, area.width, area.height)
-        rects.append(rect)
-
+    # TODO: Consider running update_frame in new thread to prevent locking the execution of
+    # a parkindstreamer instance
     # Update the frame for the AI module
-    res = ai.update_frame(img, dev_id, cam_id, detection_areas)
-    if res:
+    if ai.update_frame(img, int(dev_id), int(cam_id)):
         return HttpResponse(status=202)
     else:
         return HttpResponse(status=400)
