@@ -242,3 +242,16 @@ def frame_upload(request, dev_id, cam_id):
         return HttpResponse(status=202)
     else:
         return HttpResponse(status=400)
+
+
+@csrf_exempt
+def stream(request, dev_id, cam_id):
+    try:
+        with open('static/img/recordings/fulls/' + dev_id + '_' + cam_id + '.jpg', "rb") as f:
+            return HttpResponse(f.read(), content_type="image/jpeg")
+    except IOError:
+        red = Image.new('RGBA', (1, 1), (255,0,0,0))
+        response = HttpResponse(content_type="image/jpeg")
+        red.save(response, "JPEG")
+        return response
+

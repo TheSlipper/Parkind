@@ -33,5 +33,6 @@ urlpatterns = [
     path('ai/init', views.init_ai, name='init_ai'),
     path('ai/stop', views.stop_ai, name='stop_ai'),
     path('ai/status', views.status_ai, name='status_ai'),    
-    path('frame/<int:dev_id>/<int:cam_id>', views.frame_upload, name='frame_upload')
+    path('frame/<int:dev_id>/<int:cam_id>', views.frame_upload, name='frame_upload'),
+    path('stream/<int:dev_id>/<int:cam_id>', views.stream, name='stream')
 ]

@@ -21,8 +21,9 @@
             </div>
             <div class="row">
                 <div class="col-sm-12 mt-4">
-                    <img src="{% static 'img/prototyping/parking_test_image.jpg' %}" class="d-block mx-auto"
-                         alt="live preview of the camera">
+                    {% comment %} <img src="{% static 'img/prototyping/parking_test_image.jpg' %}" id="img-stream-dest" class="d-block mx-auto"> {% endcomment %}
+                    <canvas id="canvas-stream-dest" width="1280" height="720">
+                    </canvas>
                 </div>
             </div>
         </div>
@@ -32,6 +33,20 @@
     <script>
         {#TODO: If more than one camera from a given device - fix that bug #}
         {#TODO: Retrieval of one frame from selected camera #}
+        function updateFrame(devID, camID) {
+            let ctx = document.getElementById('canvas-stream-dest').getContext('2d');
+            let img = new Image();
+            img.onload = function() {
+                ctx.beginPath();
+                ctx.fillRect(0, 0, 1280, 720);
+                ctx.stroke();
+                ctx.drawImage(img, 0, 0);
+                ctx.stroke();
+            };
+            img.src = 'http://' + window.location.hostname + ':8000/static/img/recordings/fulls/' + devID + '_' +
+                camID + '.jpg';
+            console.log('Hello:', img.src);
+        }
 
         function afterCameraRequest(arr) {
             let cameraSelectElem = document.getElementById('cameraSelect');
@@ -67,10 +82,18 @@
         }
 
         window.onload = function () {
-            document.getElementById('deviceSelect').addEventListener('change', (event) => {
-                requestList('camera', afterCameraRequest);
-            });
             requestList('device', afterDeviceRequest);
+            let streamInterval = setInterval(function(){ updateFrame(1,1); }, 1000);
+
+            document.getElementById('deviceSelect').addEventListener('change', (event) => {
+                requestList('camera', function(arr) {
+                    afterCameraRequest(arr);
+                    clearInterval(streamInterval);
+                    let devID = document.getElementById("deviceSelect").value;
+                    let camID = document.getElementById("cameraSelect").value;
+                    streamInterval = setInterval(function(){ updateFrame(devID, camID); }, 1000);
+                });
+            });
         };
     </script>
 {% endblock %}
