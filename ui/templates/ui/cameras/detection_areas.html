@@ -21,7 +21,7 @@
             </div>
             <div class="row mt-5">
                 <div class="col-sm-6">
-                    <h2>Created Detection Areas</h2>
+                    <h2>Detection Areas</h2>
                 </div>
                 <div class="col-sm-3">
                     <button type="button" class="btn btn-primary btn-block" id="areaBtn" onclick="refresh(true);" disabled>
@@ -56,21 +56,9 @@
                     </table>
                 </div>
             </div>
-            <div class="row mb-0">
+            {% comment %} <div class="row mb-0">
                 <h2>Register a new area</h2>
-            </div>
-
-            <div class="row mt-2 mb-5">
-                <div id="coords" class="coords col-sm-5">
-                    <label>X1: <input type="text" size="4" id="x1" name="x1"/></label>
-                    <label>Y1: <input type="text" size="4" id="y1" name="y1"/></label>
-                    <label>W: <input type="text" size="4" id="w" name="w"/></label>
-                    <label>H: <input type="text" size="4" id="h" name="h"/></label>
-                </div>
-                <div class="col-sm-7">
-                    <button class="btn btn-success btn-block" onclick="registerArea()">Register Area</button>
-                </div>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
 
@@ -83,6 +71,21 @@
         {#TODO: Retrieval of one frame from selected camera #}
         let places = [];
         let areasMode = true;
+        
+        const areasModeHTML = `<canvas id="detectionAreasCanvas" width="1280" height="720"></canvas>`;
+
+        const selectModeHTML = `
+            <div class="row mt-2 mb-5">
+                <div id="coords" class="coords col-sm-5">
+                    <label>X1: <input type="text" size="4" id="x1" name="x1"/></label>
+                    <label>Y1: <input type="text" size="4" id="y1" name="y1"/></label>
+                    <label>W: <input type="text" size="4" id="w" name="w"/></label>
+                    <label>H: <input type="text" size="4" id="h" name="h"/></label>
+                </div>
+                <div class="col-sm-7">
+                    <button class="btn btn-success btn-block" onclick="registerArea()">Register Area</button>
+                </div>
+            </div>`;
 
         function afterAreasRequest(arr) {
             if (arr != null && arr.length !== 0) {
@@ -173,19 +176,33 @@
         }
 
         function drawSelectionToCanvas() {
-
         }
 
         function refresh(stateSwitch) {
             if (stateSwitch) {
                 let areaBtn = document.getElementById('areaBtn');
                 let selectBtn = document.getElementById('selectBtn');
+                let row = document.getElementById('content-container');
+
                 if (areasMode) {
+                    // Switching from area mode to select mode
                     areaBtn.disabled = false;
                     selectBtn.disabled = true;
+
+                    // Delete the canvas and replace it with image
+                    let devID = document.getElementById('deviceSelect').value;
+                    let camID = document.getElementById('cameraSelect').value;
+                    let src = 'http://' + window.location.hostname + ':8000/static/img/recordings/fulls/' + devID +
+                        '_' + camID + '.jpg';
+                    let imgRow = `<div class="row"><img src="${src}"></div>`;
+                    row.innerHTML = imgRow + selectModeHTML;
                 } else {
+                    // Switching from select mode to area mode
                     areaBtn.disabled = true;
                     selectBtn.disabled = false;
+
+                    // Delete the image and replace it with a canvas
+                    row.innerHTML = areasModeHTML;
                 }
 
                 areasMode = !areasMode;
@@ -200,161 +217,5 @@
             });
             requestList('device', afterDeviceRequest);
         };
-
-        /*let places = [];
-
-        function afterAreasRequest(arr) {
-            if (arr != null && arr.length !== 0) {
-                let camId = parseInt(document.getElementById('cameraSelect').value);
-                debugger;
-                places = arr.filter(place => place.camera === camId);
-            }
-            else
-                places = [];
-            drawImageWithSelectedAreas();
-            updateTableWithSelectedAreas();
-        }
-
-        function afterCameraRequest(arr) {
-            let cameraSelectElem = document.getElementById('cameraSelect');
-            if (arr == null || arr.length === 0) {
-                cameraSelectElem.disabled = true;
-                cameraSelectElem.innerHTML = `<option value='None'>No cameras detected for the device</option>`;
-                return;
-            }
-            let deviceId = parseInt(document.getElementById('deviceSelect').value);
-            let selectContent = "";
-            arr.forEach(camera => {
-                if (camera.id === deviceId)
-                    selectContent += `<option value="${camera.id}">${camera.name}</option>`;
-            });
-            cameraSelectElem.disabled = false;
-            cameraSelectElem.innerHTML = selectContent;
-            cameraSelectElem.selectedIndex = "0";
-            requestList('detection_area', afterAreasRequest);
-        }
-
-        function afterDeviceRequest(arr) {
-            if (arr == null || arr.length === 0) {
-                let container = document.getElementById('detectionAreaViewContainer');
-                container.innerHTML = `<div class='row'><h1 class='text-danger'>No registered devices detected</h2></div>`;
-                return;
-            }
-            let selectContent = "";
-            arr.forEach(device => selectContent += `<option value="${device.id}">${device.name}</option>`);
-
-            let deviceSelectElem = document.getElementById('deviceSelect');
-            deviceSelectElem.innerHTML = selectContent;
-            deviceSelectElem.selectedIndex = "0";
-            requestList('camera', afterCameraRequest);
-        }
-
-        window.onload = function () {
-            document.getElementById('deviceSelect').addEventListener('change', (event) => {
-                requestList('camera', afterCameraRequest);
-            });
-            requestList('device', afterDeviceRequest);
-        };
-
-
-        let finalX1, finalX2, finalY1, finalY2;
-
-        jQuery(function ($) {
-            let jcrop_api;
-
-            $('#target').Jcrop({
-                onChange: showCoords,
-                onSelect: showCoords,
-                onRelease: clearCoords
-            }, function () {
-                jcrop_api = this;
-            });
-
-            $('#coords').on('change', 'input', function (e) {
-                var x1 = $('#x1').val(),
-                    x2 = $('#x2').val(),
-                    y1 = $('#y1').val(),
-                    y2 = $('#y2').val();
-                jcrop_api.setSelect([x1, y1, x2, y2]);
-            });
-
-        });
-
-        function showCoords(c) {
-            $('#x1').val(c.x);
-            $('#y1').val(c.y);
-            $('#w').val(c.w);
-            $('#h').val(c.h);
-        }
-
-        function clearCoords() {
-            $('#coords input').val('');
-        }
-
-        function deleteArea(btn, dbId) {
-            requestDelete('detection_area', dbId, getCookie('csrftoken'), function (result) {
-                debugger;
-                if (result) {
-                    places = places.filter(place => place.id !== dbId);
-                    drawImageWithSelectedAreas();
-                    updateTableWithSelectedAreas();
-                } else {
-                    console.log('Error occurred while trying to delete a detection area');
-                }
-            });
-        }
-
-        function registerArea() {
-            let obj = {
-                // id: places[places.length - 1].id + 1, // TODO: Extract the newest id from API instead
-                camera: parseInt(document.getElementById('cameraSelect').value),
-                x: document.getElementById('x1').value,
-                y: document.getElementById('y1').value,
-                width: document.getElementById('w').value,
-                height: document.getElementById('h').value
-            };
-            let csrftoken = getCookie('csrftoken');
-            requestCreate('detection_area', obj, csrftoken, function (res, body) {
-                if (res) {
-                    obj.id = parseInt(body);
-                    places.push(obj);
-                    updateTableWithSelectedAreas();
-                    drawImageWithSelectedAreas();
-                } else {
-                    console.log("Error occurred while trying to upload the new detection area");
-                }
-            });
-            // TODO: Register in database via the API
-        }
-
-        function drawImageWithSelectedAreas() {
-            const COLORS = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#e74c3c'];
-            let ctx = document.getElementById('detectionAreasCanvas').getContext('2d');
-            let img = document.getElementById('target');
-            let i = 0;
-            ctx.beginPath();
-            ctx.drawImage(img, 10, 10);
-            ctx.globalAlpha = 0.3;
-            places.forEach(area => {
-                ctx.fillStyle = COLORS[i];
-                ctx.fillRect(area.x, area.y, area.width, area.height);
-                ctx.stroke();
-                i++;
-                if (i === COLORS.length)
-                    i = 0;
-            });
-            ctx.globalAlpha = 1.0;
-        }
-
-        function updateTableWithSelectedAreas() {
-            let tableBody = document.getElementById('areaTableBody');
-            let text = "";
-            for (i = 0; i < places.length; i++) {
-                let area = places[i];
-                text += `<tr><td>${area.x}</td><td>${area.y}</td><td>${area.width}</td><td>${area.height}</td>
-                        <td><button class="btn btn-danger" onclick="deleteArea(this, ${area.id})">Delete</button></td></tr>`;
-            }
-            tableBody.innerHTML = text;
-        }*/
     </script>
 {% endblock %}
