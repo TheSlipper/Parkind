@@ -115,12 +115,12 @@
         function afterAreasRequest(arr) {
             if (arr != null && arr.length !== 0) {
                 let camId = parseInt(document.getElementById('cameraSelect').value);
-                debugger;
                 places = arr.filter(place => place.camera === camId);
             }
             else
                 places = [];
             
+            console.log(arr);
             updateTable();
             if (areasMode) {
                 drawAreasToCanvas();
@@ -175,7 +175,7 @@
         }
 
         function drawAreasToCanvas() {
-            const COLORS = ['#ff0000', '#00ff00'];
+            const COLORS = [, ];
             let ctx = document.getElementById('detectionAreasCanvas').getContext('2d');
             // let img = document.getElementById('target');
             let devID = document.getElementById('deviceSelect').value;
@@ -187,7 +187,10 @@
                 ctx.drawImage(img, 0, 0);
                 ctx.globalAlpha = 0.3;
                 places.forEach(area => {
-                    ctx.fillStyle = COLORS[i];
+                    if (area.occupied)
+                        ctx.fillStyle = '#ff0000';
+                    else
+                        ctx.fillStyle = '#00ff00';
                     ctx.fillRect(area.x, area.y, area.width, area.height);
                     ctx.stroke();
                     i++;
@@ -212,15 +215,12 @@
                 ctx.drawImage(img, 0, 0);
 
                 if (selectRect.length === 4) {
-                    console.log('drawing 1');
                     ctx.globalAlpha = 0.3;
                     ctx.fillStyle = '#00ff00';
-                    console.log(selectRect);
                     ctx.fillRect(parseInt(selectRect[0]), parseInt(selectRect[1]), 
                         parseInt(selectRect[2]), parseInt(selectRect[3]));
                     ctx.stroke();
                     ctx.globalAlpha = 1.0;
-                    console.log('drawing 2');
                 }
             };
             img.src = 'http://' + window.location.hostname + ':8000/static/img/recordings/fulls/' + devID + '_' +

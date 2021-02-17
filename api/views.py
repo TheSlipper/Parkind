@@ -121,8 +121,38 @@ def detection_area_detail(request, id):
 @api_view(['GET'])
 def detection_area_list(request):
     detection_areas = ParkingArea.objects.all()
-    serializer = DetectionAreaSerializer(detection_areas, many=True)
-    return Response(serializer.data)
+    occupancies = ai.occupancy_list()
+    json = "["
+    
+    # TODO: Implement this
+    first = True
+
+    for area in detection_areas:
+        if not first:
+            json = json + ","
+
+        obj_json = '{"id": ' + str(area.id) + ',"x":' + str(area.x) + ',"y":' + str(area.y) + ',"width":'
+        obj_json = obj_json + str(area.width) + ',"height":' + str(area.height) + ',"camera":' + str(area.camera_id)
+        obj_json = obj_json + ',"occupied":'
+
+        occupied = False
+        for occ_entry in occupancies:
+            area_id, occ = occ_entry
+            if occ and int(area.id) == int(area_id):
+                occupied = True
+
+        if occupied:
+            obj_json = obj_json + " true}"
+        else:
+            obj_json = obj_json + " false}"
+
+        json = json + obj_json
+        first = False
+
+    json = json + "]"
+
+    # serializer = DetectionAreaSerializer(detection_areas, many=True)
+    return HttpResponse(json, content_type="application/json")
 
 
 @api_view(['DELETE'])
