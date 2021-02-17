@@ -263,12 +263,15 @@ def frame_upload(request, dev_id, cam_id):
     # Decode and save image to disk
     img = cv2.imdecode(np.fromstring(request.body, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
     f_name = str(dev_id) + "_" + str(cam_id) + ".jpg"
-    cv2.imwrite("static/img/recordings/fulls/" + f_name, img)
+    writeStatus = cv2.imwrite("static/img/recordings/fulls/" + f_name, img)
 
     # TODO: Consider running update_frame in new thread to prevent locking the execution of
     # a parkindstreamer instance
     # Update the frame for the AI module
-    if ai.update_frame(img, int(dev_id), int(cam_id)):
+    # 
+    if writeStatus:
+        th = Thread(target = ai.update_frame, args=(img, int(dev_id), int(cam_id)))
+        th.start()
         return HttpResponse(status=202)
     else:
         return HttpResponse(status=400)
