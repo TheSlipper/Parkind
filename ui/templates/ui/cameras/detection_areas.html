@@ -64,17 +64,16 @@
 
     <script src="{% static 'js/utils.js' %}"></script>
     <script src="{% static 'js/rest/crud.js' %}"></script>
-    <script src="{% static 'vendor/Jcrop/js/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/Jcrop/js/jquery.Jcrop.js' %}"></script>
     <link rel="stylesheet" href="{% static 'vendor/Jcrop/css/jquery.Jcrop.css' %}" type="text/css"/>
     <script>
         {#TODO: Retrieval of one frame from selected camera #}
         let places = [];
         let areasMode = true;
+        let selectRect = [];
         
-        const areasModeHTML = `<canvas id="detectionAreasCanvas" width="1280" height="720"></canvas>`;
+        const areasModeHTML = `<canvas id="detectionAreasCanvas" width="1280" height="720"></canvas><br>`;
 
-        const selectModeHTML = `
+        const selectModeHTML = areasModeHTML + `
             <div class="row mt-2 mb-5">
                 <div id="coords" class="coords col-sm-5">
                     <label>X1: <input type="text" size="4" id="x1" name="x1"/></label>
@@ -82,10 +81,36 @@
                     <label>W: <input type="text" size="4" id="w" name="w"/></label>
                     <label>H: <input type="text" size="4" id="h" name="h"/></label>
                 </div>
-                <div class="col-sm-7">
+                <div class="col-sm-3">
+                    <button class="btn btn-primary btn-block" id="drawBtn">Draw on canvas</button>
+                </div>
+                <div class="col-sm-4">
                     <button class="btn btn-success btn-block" onclick="registerArea()">Register Area</button>
                 </div>
             </div>`;
+
+        function registerArea() {
+            let obj = {
+                // id: places[places.length - 1].id + 1, // TODO: Extract the newest id from API instead
+                camera: parseInt(document.getElementById('cameraSelect').value),
+                x: document.getElementById('x1').value,
+                y: document.getElementById('y1').value,
+                width: document.getElementById('w').value,
+                height: document.getElementById('h').value
+            };
+            let csrftoken = getCookie('csrftoken');
+            requestCreate('detection_area', obj, csrftoken, function (res, body) {
+                if (res) {
+                    obj.id = parseInt(body);
+                    places.push(obj);
+                    updateTableWithSelectedAreas();
+                    drawImageWithSelectedAreas();
+                } else {
+                    console.log("Error occurred while trying to upload the new detection area");
+                }
+            });
+            refresh(true);
+        }
 
         function afterAreasRequest(arr) {
             if (arr != null && arr.length !== 0) {
@@ -176,6 +201,30 @@
         }
 
         function drawSelectionToCanvas() {
+            const COLORS = ['#ff0000', '#00ff00'];
+            let ctx = document.getElementById('detectionAreasCanvas').getContext('2d');
+            let devID = document.getElementById('deviceSelect').value;
+            let camID = document.getElementById('cameraSelect').value;
+            let img = new Image();
+            img.onload = function() {
+                let i = 0;
+                ctx.beginPath();
+                ctx.drawImage(img, 0, 0);
+
+                if (selectRect.length === 4) {
+                    console.log('drawing 1');
+                    ctx.globalAlpha = 0.3;
+                    ctx.fillStyle = '#00ff00';
+                    console.log(selectRect);
+                    ctx.fillRect(parseInt(selectRect[0]), parseInt(selectRect[1]), 
+                        parseInt(selectRect[2]), parseInt(selectRect[3]));
+                    ctx.stroke();
+                    ctx.globalAlpha = 1.0;
+                    console.log('drawing 2');
+                }
+            };
+            img.src = 'http://' + window.location.hostname + ':8000/static/img/recordings/fulls/' + devID + '_' +
+                camID + '.jpg';
         }
 
         function refresh(stateSwitch) {
@@ -189,17 +238,23 @@
                     areaBtn.disabled = false;
                     selectBtn.disabled = true;
 
-                    // Delete the canvas and replace it with image
-                    let devID = document.getElementById('deviceSelect').value;
-                    let camID = document.getElementById('cameraSelect').value;
-                    let src = 'http://' + window.location.hostname + ':8000/static/img/recordings/fulls/' + devID +
-                        '_' + camID + '.jpg';
-                    let imgRow = `<div class="row"><img src="${src}"></div>`;
-                    row.innerHTML = imgRow + selectModeHTML;
+                    // Delete the old canvas with new canvas
+                    row.innerHTML = selectModeHTML;
+
+                    let drawBtn = document.getElementById('drawBtn');
+                    drawBtn.onclick = function() {
+                        let x = document.getElementById('x1').value, y = document.getElementById('y1').value;
+                        let width = document.getElementById('w').value, height = document.getElementById('h').value;
+                        selectRect = [x, y, width, height];
+                        drawSelectionToCanvas();
+                    }
                 } else {
                     // Switching from select mode to area mode
                     areaBtn.disabled = true;
                     selectBtn.disabled = false;
+
+                    // No more selection - clear the array
+                    selectRect = [];
 
                     // Delete the image and replace it with a canvas
                     row.innerHTML = areasModeHTML;
