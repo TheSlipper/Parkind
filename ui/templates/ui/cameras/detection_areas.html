@@ -24,10 +24,14 @@
                     <h2>Created Detection Areas</h2>
                 </div>
                 <div class="col-sm-3">
-                    <button type="button" class="btn btn-primary btn-block">Areas Mode</btn>
+                    <button type="button" class="btn btn-primary btn-block" id="areaBtn" onclick="refresh(true);" disabled>
+                        Areas Mode
+                    </button>
                 </div>
                 <div class="col-sm-3">
-                    <button type="button" class="btn btn-secondary btn-block" disabled>Select Mode</btn>
+                    <button type="button" class="btn btn-secondary btn-block" id="selectBtn"  onclick="refresh(true);">
+                        Select Mode
+                    </button>
                 </div>
             </div>
 
@@ -78,7 +82,7 @@
     <script>
         {#TODO: Retrieval of one frame from selected camera #}
         let places = [];
-        let selectionMode = false;
+        let areasMode = true;
 
         function afterAreasRequest(arr) {
             if (arr != null && arr.length !== 0) {
@@ -90,10 +94,10 @@
                 places = [];
             
             updateTable();
-            if (selectionMode) {
+            if (areasMode) {
                 drawAreasToCanvas();
             } else {
-
+                drawSelectionToCanvas();
             }
         }
 
@@ -170,6 +174,24 @@
 
         function drawSelectionToCanvas() {
 
+        }
+
+        function refresh(stateSwitch) {
+            if (stateSwitch) {
+                let areaBtn = document.getElementById('areaBtn');
+                let selectBtn = document.getElementById('selectBtn');
+                if (areasMode) {
+                    areaBtn.disabled = false;
+                    selectBtn.disabled = true;
+                } else {
+                    areaBtn.disabled = true;
+                    selectBtn.disabled = false;
+                }
+
+                areasMode = !areasMode;
+            }
+            
+            requestList('device', afterDeviceRequest);
         }
 
         window.onload = function () {
